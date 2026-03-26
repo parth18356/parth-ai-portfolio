@@ -716,6 +716,15 @@ window.addEventListener('resize',()=>{
   if(window.innerWidth>768)document.getElementById('mob-menu').style.display='none';
 });
 
+// IMAGE FIX — force reload hero image after page loads
+window.addEventListener('load', function(){
+  const heroImg = document.getElementById('heroImg');
+  if(heroImg){
+    heroImg.src = '';
+    setTimeout(()=>{ heroImg.src = 'parth.jpg?v='+Date.now(); }, 100);
+  }
+});
+
 function gmClose(){document.getElementById('gm-modal').style.display='none';}
 
 function switchG(id,btn){
