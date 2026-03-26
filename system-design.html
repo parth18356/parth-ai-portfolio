@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI System Design — Parth.ai</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#0a0a0f;--bg2:#0f172a;--bg3:#1e293b;--cyan:#22d3ee;--blue:#38bdf8;--green:#4ade80;--purple:#a78bfa;--yellow:#fbbf24;--text:#e2e8f0;--muted:#64748b;}
+body{background:var(--bg);color:var(--text);font-family:'Courier New',monospace;min-height:100vh;}
+nav{background:rgba(10,10,15,.95);border-bottom:.5px solid var(--bg3);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.nav-logo{color:var(--cyan);font-size:14px;font-weight:700;}
+.nav-logo span{color:#f1f5f9;}
+.nav-badge{font-size:10px;padding:3px 10px;border-radius:4px;background:rgba(167,139,250,.1);color:var(--purple);border:.5px solid rgba(167,139,250,.25);}
+.container{max-width:1200px;margin:0 auto;padding:32px 24px;}
+h1{font-size:28px;color:#f1f5f9;font-family:system-ui;font-weight:700;margin-bottom:8px;}
+h1 span{color:var(--purple);}
+.subtitle{color:var(--muted);font-size:13px;font-family:system-ui;margin-bottom:32px;line-height:1.7;}
+.card{background:var(--bg2);border:.5px solid var(--bg3);border-radius:12px;padding:24px;margin-bottom:20px;}
+.card-title{font-size:11px;color:var(--cyan);letter-spacing:.15em;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.card-title::after{content:'';flex:1;height:.5px;background:var(--bg3);}
+.inp{background:#070b13;border:.5px solid var(--bg3);border-radius:6px;padding:10px 14px;font-size:12px;color:var(--text);font-family:'Courier New',monospace;width:100%;transition:border-color .2s;}
+.inp:focus{outline:none;border-color:var(--cyan);}
+.btn{padding:10px 20px;border-radius:6px;font-size:12px;font-family:'Courier New',monospace;font-weight:700;border:none;cursor:pointer;transition:all .2s;}
+.btn-primary{background:var(--purple);color:#0a0a0f;}
+.btn-primary:hover{background:#c084fc;}
+.btn-secondary{background:transparent;color:var(--cyan);border:.5px solid var(--bg3);}
+.btn-secondary:hover{border-color:var(--cyan);}
+.prompt-row{display:flex;gap:12px;align-items:stretch;}
+.prompt-row .inp{font-size:14px;padding:14px 18px;flex:1;}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.chip{font-size:11px;padding:5px 12px;border-radius:20px;background:rgba(167,139,250,.08);color:var(--purple);border:.5px solid rgba(167,139,250,.2);cursor:pointer;transition:all .2s;font-family:system-ui;}
+.chip:hover{background:rgba(167,139,250,.18);border-color:var(--purple);}
+.scale-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;}
+.scale-opt{background:#070b13;border:.5px solid var(--bg3);border-radius:6px;padding:10px;text-align:center;cursor:pointer;transition:all .2s;}
+.scale-opt.selected{border-color:var(--purple);background:rgba(167,139,250,.08);}
+.scale-opt-title{font-size:12px;color:var(--text);margin-bottom:2px;font-family:system-ui;font-weight:600;}
+.scale-opt-sub{font-size:10px;color:var(--muted);font-family:system-ui;}
+.thinking{display:flex;align-items:center;gap:10px;padding:16px;background:rgba(167,139,250,.05);border:.5px solid rgba(167,139,250,.15);border-radius:8px;font-size:12px;color:var(--purple);font-family:system-ui;margin-bottom:20px;}
+.dot-pulse{display:flex;gap:4px;}
+.dot-pulse span{width:6px;height:6px;border-radius:50%;background:var(--purple);animation:dp .8s ease-in-out infinite;}
+.dot-pulse span:nth-child(2){animation-delay:.16s;}
+.dot-pulse span:nth-child(3){animation-delay:.32s;}
+@keyframes dp{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+.output-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.arch-diagram{background:#040810;border:.5px solid var(--bg3);border-radius:10px;padding:20px;min-height:400px;overflow-x:auto;}
+.arch-diagram svg{width:100%;height:auto;}
+.section-hdr{font-size:11px;color:var(--cyan);letter-spacing:.12em;text-transform:uppercase;padding:8px 0;border-bottom:.5px solid var(--bg3);margin:0 0 14px;}
+.component-card{background:#070b13;border:.5px solid var(--bg3);border-radius:8px;padding:14px;margin-bottom:10px;border-left:3px solid var(--purple);}
+.comp-name{font-size:13px;font-weight:700;color:var(--purple);margin-bottom:4px;font-family:system-ui;}
+.comp-desc{font-size:12px;color:var(--muted);font-family:system-ui;line-height:1.7;}
+.comp-tech{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.tech-tag{font-size:10px;padding:2px 8px;border-radius:4px;background:rgba(167,139,250,.1);color:var(--purple);border:.5px solid rgba(167,139,250,.2);}
+.tradeoff{display:flex;gap:10px;padding:10px 14px;border-radius:6px;margin-bottom:8px;font-size:12px;font-family:system-ui;line-height:1.6;}
+.tradeoff.pro{background:rgba(74,222,128,.05);border:.5px solid rgba(74,222,128,.15);color:#d1fae5;}
+.tradeoff.con{background:rgba(248,113,113,.05);border:.5px solid rgba(248,113,113,.15);color:#fee2e2;}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+.stat-mini{background:var(--bg2);border:.5px solid var(--bg3);border-radius:8px;padding:12px;text-align:center;}
+.stat-mini-val{font-size:18px;font-weight:700;color:var(--purple);font-family:system-ui;}
+.stat-mini-lbl{font-size:10px;color:var(--muted);margin-top:2px;font-family:system-ui;text-transform:uppercase;letter-spacing:.06em;}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo"><span>Parth</span>.ai — <span style="color:#f1f5f9;font-size:12px;">System Design</span></div>
+  <div class="nav-badge">Powered by Gemini 1.5 Flash · Free</div>
+</nav>
+
+<div class="container">
+  <h1>AI System <span>Design</span> Generator</h1>
+  <p class="subtitle">Enter any app or system name. AI generates a complete architecture diagram, component breakdown, tech stack, and scalability tradeoffs.</p>
+
+
+
+  <div class="card">
+    <div class="card-title">What do you want to design?</div>
+    <div class="prompt-row">
+      <input class="inp" type="text" id="promptInp" placeholder="e.g. Design a food delivery app like Zomato..." onkeydown="if(event.key==='Enter')generate()"/>
+      <button class="btn btn-primary" onclick="generate()" id="genBtn" style="padding:14px 28px;font-size:13px;">⚡ Generate</button>
+    </div>
+    <div class="chips" id="suggestions">
+      <span class="chip" onclick="setPrompt('Real-time ride sharing app like Uber')">🚗 Ride sharing</span>
+      <span class="chip" onclick="setPrompt('Video streaming platform like Netflix')">🎬 Video streaming</span>
+      <span class="chip" onclick="setPrompt('E-commerce marketplace like Amazon')">🛒 E-commerce</span>
+      <span class="chip" onclick="setPrompt('Social media feed like Twitter/X')">🐦 Social feed</span>
+      <span class="chip" onclick="setPrompt('Payment gateway like Razorpay')">💳 Payment gateway</span>
+      <span class="chip" onclick="setPrompt('Messaging app like WhatsApp')">💬 Messaging app</span>
+      <span class="chip" onclick="setPrompt('Hotel booking system like Booking.com')">🏨 Hotel booking</span>
+      <span class="chip" onclick="setPrompt('Collaborative code editor like VS Code Live Share')">👩‍💻 Code editor</span>
+    </div>
+    <div style="margin-top:20px;">
+      <div style="font-size:11px;color:var(--cyan);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;">Scale Target</div>
+      <div class="scale-opts">
+        <div class="scale-opt" onclick="selectScale(this,'startup')" id="scale-startup">
+          <div class="scale-opt-title">🚀 Startup</div>
+          <div class="scale-opt-sub">~1K users/day</div>
+        </div>
+        <div class="scale-opt selected" onclick="selectScale(this,'mid')" id="scale-mid">
+          <div class="scale-opt-title">📈 Mid-Scale</div>
+          <div class="scale-opt-sub">~1M users/day</div>
+        </div>
+        <div class="scale-opt" onclick="selectScale(this,'hyper')" id="scale-hyper">
+          <div class="scale-opt-title">🌐 Hyper-Scale</div>
+          <div class="scale-opt-sub">~1B users/day</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="thinking" id="thinking" style="display:none;">
+    <div class="dot-pulse"><span></span><span></span><span></span></div>
+    <span id="thinkingTxt">Generating architecture...</span>
+  </div>
+
+  <div id="output" style="display:none;">
+    <div class="stats-row" id="statsRow"></div>
+    <div class="output-grid">
+      <div>
+        <div class="card" style="padding:16px;">
+          <div class="section-hdr">Architecture Diagram</div>
+          <div class="arch-diagram" id="diagram"></div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="section-hdr">Components</div>
+          <div id="components"></div>
+        </div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+      <div class="card">
+        <div class="section-hdr">Tradeoffs & Decisions</div>
+        <div id="tradeoffs"></div>
+      </div>
+      <div class="card">
+        <div class="section-hdr">Scalability Strategy</div>
+        <div id="scalability" style="font-size:12px;color:var(--muted);font-family:system-ui;line-height:1.8;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const GEMINI_KEY='AIzaSyDwf43Hrp8ItWbkr8vm8c9ph9CjRkZllVw';
+let scale='mid';
+function setPrompt(t){document.getElementById('promptInp').value=t;}
+function selectScale(el,s){scale=s;document.querySelectorAll('.scale-opt').forEach(e=>e.classList.remove('selected'));el.classList.add('selected');}
+
+async function generate(){
+  const prompt=document.getElementById('promptInp').value.trim();
+  if(!prompt){alert('Please enter a system to design.');return;}
+  document.getElementById('thinking').style.display='flex';
+  document.getElementById('output').style.display='none';
+  document.getElementById('genBtn').disabled=true;
+  document.getElementById('genBtn').textContent='⏳ Generating…';
+  const old=document.getElementById('gemini-err');
+  if(old) old.remove();
+  document.getElementById('thinkingTxt').textContent='Designing your system architecture...';
+
+  const scaleMap={startup:'1,000 users/day, minimal infrastructure, cost-optimized',mid:'1 million users/day, horizontal scaling, high availability',hyper:'1 billion users/day, global CDN, multi-region, eventual consistency'};
+
+  const aiPrompt=`You are a principal solutions architect. Design a complete system for: "${prompt}"
+Scale: ${scaleMap[scale]}
+
+Respond ONLY with valid JSON (no markdown):
+{
+  "title": "System name",
+  "description": "1-2 sentence overview",
+  "stats": {"rps": "10K req/s", "latency": "<200ms", "availability": "99.99%", "storage": "50TB"},
+  "components": [
+    {"name": "API Gateway", "description": "Role and responsibility", "technologies": ["Nginx","Kong"], "color": "#a78bfa"},
+    {"name": "Auth Service", "description": "...", "technologies": ["JWT","OAuth2"], "color": "#38bdf8"},
+    {"name": "Core Service", "description": "...", "technologies": ["FastAPI","Python"], "color": "#4ade80"},
+    {"name": "Database", "description": "...", "technologies": ["PostgreSQL","Redis"], "color": "#fbbf24"},
+    {"name": "Message Queue", "description": "...", "technologies": ["Kafka","RabbitMQ"], "color": "#f87171"},
+    {"name": "CDN / Storage", "description": "...", "technologies": ["CloudFront","S3"], "color": "#22d3ee"}
+  ],
+  "connections": [
+    {"from": "API Gateway", "to": "Auth Service"},
+    {"from": "API Gateway", "to": "Core Service"},
+    {"from": "Core Service", "to": "Database"},
+    {"from": "Core Service", "to": "Message Queue"},
+    {"from": "Message Queue", "to": "CDN / Storage"}
+  ],
+  "tradeoffs": [
+    {"type": "pro", "text": "Why a specific decision is good"},
+    {"type": "con", "text": "A tradeoff or limitation"},
+    {"type": "pro", "text": "Another advantage"},
+    {"type": "con", "text": "Another tradeoff"}
+  ],
+  "scalability": "Detailed paragraph on how the system scales, what bottlenecks to watch, and how to handle peak traffic"
+}`;
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',    headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({contents:[{parts:[{text:aiPrompt}]}],generationConfig:{temperature:.4,maxOutputTokens:3000}})
+    });
+    const data=await res.json();
+    if(!res.ok||data.error)throw new Error(data?.error?.message||'Gemini error');
+    const raw=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
+    if(!raw)throw new Error('Empty response');
+    const clean=raw.replace(/```json|```/gm,'').trim();
+    let design;
+    try{ design=JSON.parse(clean); }
+    catch{ const m=clean.match(/\{[\s\S]*\}/); if(!m) throw new Error('Bad JSON from Gemini'); design=JSON.parse(m[0]); }
+    renderDesign(design);
+  }catch(e){
+    document.getElementById('thinking').style.display='none';
+    document.getElementById('genBtn').disabled=false;
+    document.getElementById('genBtn').textContent='⚡ Generate';
+    const errDiv=document.getElementById('gemini-err')||document.createElement('div');
+    errDiv.id='gemini-err';
+    errDiv.style.cssText='background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.3);border-radius:8px;padding:14px;color:#f87171;font-size:13px;margin-top:16px;font-family:system-ui';
+    errDiv.innerHTML='❌ <strong>Error:</strong> '+e.message+'<br><small style="color:#64748b;margin-top:4px;display:block">Note: This tool requires Vercel/browser deployment — Gemini API is blocked in Claude\'s sandbox preview.</small>';
+    document.querySelector('.container').appendChild(errDiv);
+  }
+}
+
+function renderDesign(d){
+  document.getElementById('thinking').style.display='none';
+  document.getElementById('genBtn').disabled=false;
+  document.getElementById('output').style.display='block';
+
+  // Stats
+  const s=d.stats||{};
+  document.getElementById('statsRow').innerHTML=Object.entries({'RPS':s.rps,'Latency':s.latency,'Availability':s.availability,'Storage':s.storage})
+    .map(([l,v])=>`<div class="stat-mini"><div class="stat-mini-val">${v||'—'}</div><div class="stat-mini-lbl">${l}</div></div>`).join('');
+
+  // Diagram
+  const comps=d.components||[];
+  const conns=d.connections||[];
+  const W=560, H=400;
+  const positions=layoutNodes(comps,W,H);
+  let svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="background:#040810;border-radius:8px;">`;
+  svg+=`<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#334155"/></marker></defs>`;
+  // Draw connections
+  conns.forEach(c=>{
+    const f=positions[c.from],t=positions[c.to];
+    if(f&&t)svg+=`<line x1="${f.cx}" y1="${f.cy}" x2="${t.cx}" y2="${t.cy}" stroke="#1e293b" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="4,3"/>`;
+  });
+  // Draw nodes
+  comps.forEach((c,i)=>{
+    const p=positions[c.name];
+    if(!p)return;
+    const col=c.color||'#64748b';
+    svg+=`<rect x="${p.x}" y="${p.y}" width="90" height="40" rx="6" fill="${col}18" stroke="${col}" stroke-width="1"/>`;
+    svg+=`<text x="${p.cx}" y="${p.cy-4}" text-anchor="middle" font-size="9" fill="${col}" font-family="system-ui" font-weight="700">${c.name}</text>`;
+    svg+=`<text x="${p.cx}" y="${p.cy+8}" text-anchor="middle" font-size="7" fill="#64748b" font-family="system-ui">${(c.technologies||[])[0]||''}</text>`;
+  });
+  svg+='</svg>';
+  document.getElementById('diagram').innerHTML=svg;
+
+  // Components
+  document.getElementById('components').innerHTML=comps.map(c=>`
+    <div class="component-card" style="border-left-color:${c.color||'var(--purple)'}">
+      <div class="comp-name" style="color:${c.color||'var(--purple)'}">${c.name}</div>
+      <div class="comp-desc">${c.description}</div>
+      <div class="comp-tech">${(c.technologies||[]).map(t=>`<span class="tech-tag" style="background:${c.color||'var(--purple)'}18;color:${c.color||'var(--purple)'};border-color:${c.color||'var(--purple)'}30">${t}</span>`).join('')}</div>
+    </div>`).join('');
+
+  // Tradeoffs
+  document.getElementById('tradeoffs').innerHTML=(d.tradeoffs||[]).map(t=>`
+    <div class="tradeoff ${t.type}"><span>${t.type==='pro'?'✅':'⚠️'}</span><span>${t.text}</span></div>`).join('');
+
+  // Scalability
+  document.getElementById('scalability').textContent=d.scalability||'';
+}
+
+function layoutNodes(comps,W,H){
+  const pos={};
+  const rows=Math.ceil(comps.length/3);
+  const cols=Math.min(3,comps.length);
+  comps.forEach((c,i)=>{
+    const col=i%3, row=Math.floor(i/3);
+    const x=30+col*(W-120)/Math.max(1,cols-1);
+    const y=30+row*(H-100)/Math.max(1,rows-1);
+    pos[c.name]={x,y,cx:x+45,cy:y+20};
+  });
+  return pos;
+}
+</script>
+</body>
+</html>

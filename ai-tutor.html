@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Coding Tutor — Parth.ai</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a0a0f;--bg2:#0f172a;--bg3:#1e293b;--cyan:#22d3ee;--green:#4ade80;--blue:#38bdf8;--purple:#a78bfa;--yellow:#fbbf24;--red:#f87171;--text:#e2e8f0;--muted:#64748b}
+body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;margin:0}
+nav{background:var(--bg2);border-bottom:1px solid var(--bg3);padding:12px 24px;display:flex;align-items:center;justify-content:space-between}
+.logo{color:var(--cyan);font-weight:700;font-size:14px}
+.logo b{color:#f1f5f9}
+.xp{font-size:11px;padding:3px 10px;border-radius:12px;background:rgba(74,222,128,.1);color:var(--green);border:1px solid rgba(74,222,128,.2)}
+.page{display:flex;height:calc(100vh - 49px)}
+
+/* SIDEBAR */
+.sidebar{width:220px;min-width:220px;background:var(--bg2);border-right:1px solid var(--bg3);overflow-y:auto;padding:14px 10px}
+.sb-hdr{font-size:10px;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;padding:0 4px}
+.topic{padding:9px 10px;border-radius:8px;cursor:pointer;margin-bottom:3px;border:1px solid transparent;transition:all .15s}
+.topic:hover{background:#070b13;border-color:var(--bg3)}
+.topic.active{background:rgba(34,211,238,.07);border-color:rgba(34,211,238,.22)}
+.tn{font-size:12px;font-weight:600;color:var(--text)}
+.topic.active .tn{color:var(--cyan)}
+.tm{font-size:10px;color:var(--muted);margin-top:2px;display:flex;align-items:center;gap:5px}
+.tbar{flex:1;height:2px;background:var(--bg3);border-radius:1px;overflow:hidden}
+.tbar-fill{height:100%;background:var(--green);border-radius:1px}
+.qdots{display:flex;gap:3px;margin-top:5px}
+.qd{width:7px;height:7px;border-radius:50%;background:var(--bg3);border:1px solid #334155;transition:all .2s;flex-shrink:0}
+.qd.done{background:var(--green);border-color:var(--green)}
+.qd.cur{background:var(--cyan);border-color:var(--cyan)}
+
+/* MIDDLE */
+.middle{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.prob{padding:18px 22px;border-bottom:1px solid var(--bg3);background:var(--bg2);flex-shrink:0}
+.prob-meta{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.diff{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:700}
+.easy{background:rgba(74,222,128,.12);color:var(--green);border:1px solid rgba(74,222,128,.25)}
+.med{background:rgba(251,191,36,.12);color:var(--yellow);border:1px solid rgba(251,191,36,.25)}
+.hard{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.25)}
+.qn{font-size:11px;color:var(--muted)}
+.pt{font-size:16px;font-weight:700;color:#f1f5f9;margin-bottom:7px}
+.pd{font-size:12px;color:var(--muted);line-height:1.75;margin-bottom:10px}
+.ex{background:#070b13;border-radius:7px;padding:10px 12px;font-size:12px;border:1px solid var(--bg3);font-family:'Courier New',monospace}
+.ex-lbl{font-size:9px;color:var(--cyan);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px}
+.ex-in{color:#94a3b8}.ex-out{color:var(--green)}
+.welcome-box{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 32px;text-align:center;flex:1}
+.welcome-box h2{font-size:18px;color:#f1f5f9;margin-bottom:8px}
+.welcome-box p{font-size:13px;color:var(--muted);line-height:1.7;max-width:280px}
+
+.code-wrap{flex:1;display:flex;flex-direction:column;padding:14px 22px;overflow:hidden;min-height:0}
+.toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px}
+.tl{display:flex;gap:6px;align-items:center}
+.lbadge{font-size:10px;padding:3px 9px;border-radius:4px;background:rgba(34,211,238,.08);color:var(--cyan);border:1px solid rgba(34,211,238,.2)}
+.timer{font-size:11px;color:var(--muted)}
+.tr{display:flex;gap:6px}
+.btn{padding:7px 14px;border-radius:6px;font-size:11px;font-weight:700;border:none;cursor:pointer;transition:all .2s}
+.btn-g{background:var(--green);color:#0a0a0f}
+.btn-b{background:rgba(56,189,248,.1);color:var(--blue);border:1px solid rgba(56,189,248,.2)}
+.btn-p{background:rgba(167,139,250,.1);color:var(--purple);border:1px solid rgba(167,139,250,.2)}
+.btn-h{background:rgba(251,191,36,.1);color:var(--yellow);border:1px solid rgba(251,191,36,.2)}
+.editor{flex:1;background:#040810;border:1px solid var(--bg3);border-radius:8px;padding:12px;font-size:13px;color:var(--green);font-family:'Courier New',monospace;resize:none;line-height:1.8;outline:none;min-height:120px}
+.editor:focus{border-color:var(--cyan)}
+.run-out{background:#040810;border:1px solid var(--bg3);border-radius:7px;padding:9px 12px;margin-top:7px;font-size:12px;font-family:'Courier New',monospace;display:none;max-height:80px;overflow-y:auto}
+.run-out.show{display:block}
+
+/* CHAT */
+.chat{width:290px;min-width:290px;background:var(--bg2);border-left:1px solid var(--bg3);display:flex;flex-direction:column;overflow:hidden}
+.chat-hdr{padding:12px 14px;border-bottom:1px solid var(--bg3);display:flex;align-items:center;gap:8px;flex-shrink:0}
+.av{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,rgba(74,222,128,.2),rgba(34,211,238,.2));border:1px solid rgba(74,222,128,.3);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.aname{font-size:12px;font-weight:700;color:#f1f5f9}
+.astatus{font-size:10px;color:var(--green)}
+.stuck{display:none;margin:0 12px 6px;background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.2);border-radius:7px;padding:8px 10px;font-size:11px;color:var(--yellow);flex-shrink:0}
+.stuck.show{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.msgs{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.msg{display:flex;gap:6px;align-items:flex-start}
+.msg.user{flex-direction:row-reverse}
+.mav{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;margin-top:2px}
+.bbl{border-radius:9px;padding:8px 11px;max-width:calc(100% - 30px);font-size:12px;line-height:1.65}
+.msg.ai .bbl{background:#070b13;color:var(--text);border:1px solid var(--bg3)}
+.msg.user .bbl{background:rgba(34,211,238,.09);color:var(--text);border:1px solid rgba(34,211,238,.18)}
+.chips{padding:7px 12px;border-top:1px solid var(--bg3);display:flex;flex-wrap:wrap;gap:5px;flex-shrink:0}
+.chip{font-size:10px;padding:3px 9px;border-radius:10px;background:rgba(74,222,128,.07);color:var(--green);border:1px solid rgba(74,222,128,.15);cursor:pointer;transition:all .2s;white-space:nowrap}
+.chip:hover{background:rgba(74,222,128,.15)}
+.inp-row{display:flex;gap:6px;padding:8px 12px;border-top:1px solid var(--bg3);flex-shrink:0}
+.cinp{flex:1;background:#070b13;border:1px solid var(--bg3);border-radius:6px;padding:8px 10px;font-size:12px;color:var(--text);font-family:system-ui;resize:none;outline:none}
+.cinp:focus{border-color:var(--cyan)}
+.sbtn{background:var(--cyan);color:#0a0a0f;border:none;border-radius:6px;padding:8px 12px;cursor:pointer;font-size:15px;font-weight:700}
+@keyframes dp{0%,80%,100%{transform:scale(.5);opacity:.3}40%{transform:scale(1);opacity:1}}
+.dots span{width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block;animation:dp .8s ease-in-out infinite;margin:0 2px}
+.dots span:nth-child(2){animation-delay:.16s}
+.dots span:nth-child(3){animation-delay:.32s}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo"><b>Parth</b>.ai — AI Coding Tutor</div>
+  <div style="display:flex;gap:10px;align-items:center">
+    <span style="font-size:11px;color:var(--yellow)">🔥 <span id="streak">1</span> day</span>
+    <span class="xp">⭐ <span id="xpVal">0</span> XP</span>
+  </div>
+</nav>
+
+<div class="page">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-hdr">Topics</div>
+    <div id="topicList"></div>
+  </div>
+
+  <!-- MIDDLE -->
+  <div class="middle">
+    <div class="prob" id="probArea">
+      <div class="welcome-box">
+        <div style="font-size:44px;margin-bottom:14px">👈</div>
+        <h2>Pick a Topic</h2>
+        <p>Click any topic to start solving problems. The AI watches your code and helps automatically when you're stuck.</p>
+      </div>
+    </div>
+    <div class="code-wrap" id="codeWrap" style="display:none">
+      <div class="toolbar">
+        <div class="tl">
+          <span class="lbadge">Python</span>
+          <span class="timer" id="timer">⏱ 0:00</span>
+        </div>
+        <div class="tr">
+          <button class="btn btn-h" onclick="giveHint()">💡 Hint</button>
+          <button class="btn btn-g" onclick="submitCode()">▶ Submit</button>
+          <button class="btn btn-p" onclick="nextQ()">Next →</button>
+        </div>
+      </div>
+      <textarea class="editor" id="editor" oninput="onType()" placeholder="# Write your solution here..."></textarea>
+      <div class="run-out" id="runOut"></div>
+    </div>
+  </div>
+
+  <!-- CHAT -->
+  <div class="chat">
+    <div class="chat-hdr">
+      <div class="av">🤖</div>
+      <div>
+        <div class="aname">AI Tutor</div>
+        <div class="astatus">● Watching your code</div>
+      </div>
+    </div>
+    <div class="stuck" id="stuckBar">
+      <span>⏱️ Stuck? I can help!</span>
+      <div style="display:flex;gap:5px">
+        <div class="chip" onclick="autoHelp()">Yes!</div>
+        <div class="chip" onclick="document.getElementById('stuckBar').classList.remove('show')">✕</div>
+      </div>
+    </div>
+    <div class="msgs" id="msgs"></div>
+    <div class="chips" id="chips"></div>
+    <div class="inp-row">
+      <textarea class="cinp" id="cinp" rows="2" placeholder="Ask anything..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();send()}"></textarea>
+      <button class="sbtn" onclick="send()">↑</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const KEY='AIzaSyDwf43Hrp8ItWbkr8vm8c9ph9CjRkZllVw';
+let curTopic=null,curQ=0,xp=0,secs=0,timerInt=null,stuckInt=null,lastType=Date.now();
+let done={};
+
+const QS={
+  'Arrays & Hashing':[
+    {t:'Two Sum',d:'Easy',desc:'Given an array nums and a target, return indices of the two numbers that add up to target. Each input has exactly one solution.',inp:'nums=[2,7,11,15], target=9',out:'[0,1]',h1:'Use a dictionary to remember values you\'ve seen.',h2:'For each number, check if (target - number) is already in your dictionary.',start:'def twoSum(nums, target):\n    # Your solution here\n    pass',sol:'def twoSum(nums, target):\n    seen={}\n    for i,n in enumerate(nums):\n        if target-n in seen: return [seen[target-n],i]\n        seen[n]=i'},
+    {t:'Contains Duplicate',d:'Easy',desc:'Given an integer array, return true if any value appears at least twice.',inp:'nums=[1,2,3,1]',out:'True',h1:'Think of a data structure that stores unique values only.',h2:'Convert to a set and compare lengths: len(nums) != len(set(nums)).',start:'def containsDuplicate(nums):\n    # Your solution here\n    pass',sol:'def containsDuplicate(nums):\n    return len(nums)!=len(set(nums))'},
+    {t:'Valid Anagram',d:'Easy',desc:'Return true if string t is an anagram of s (uses all original letters exactly once).',inp:'s="anagram", t="nagaram"',out:'True',h1:'Count the frequency of each character in both strings.',h2:'Use Counter(s)==Counter(t) to compare character frequencies.',start:'def isAnagram(s, t):\n    # Your solution here\n    pass',sol:'from collections import Counter\ndef isAnagram(s,t):\n    return Counter(s)==Counter(t)'},
+  ],
+  'Two Pointers':[
+    {t:'Valid Palindrome',d:'Easy',desc:'Return true if the string (ignoring non-alphanumeric chars and case) reads the same forward and backward.',inp:'"A man, a plan, a canal: Panama"',out:'True',h1:'Use two pointers — one from start, one from end, move inward.',h2:'Skip non-alphanumeric characters and compare lowercase letters.',start:'def isPalindrome(s):\n    # Your solution here\n    pass',sol:'def isPalindrome(s):\n    l,r=0,len(s)-1\n    while l<r:\n        while l<r and not s[l].isalnum():l+=1\n        while l<r and not s[r].isalnum():r-=1\n        if s[l].lower()!=s[r].lower():return False\n        l+=1;r-=1\n    return True'},
+    {t:'Two Sum II (Sorted)',d:'Medium',desc:'Given a 1-indexed sorted array, find two numbers adding up to target. Return their indices. Use O(1) extra space.',inp:'numbers=[2,7,11,15], target=9',out:'[1,2]',h1:'Since the array is sorted, moving pointers changes the sum predictably.',h2:'If sum > target move right left; if sum < target move left right.',start:'def twoSum(numbers, target):\n    # Your solution here\n    pass',sol:'def twoSum(numbers,target):\n    l,r=0,len(numbers)-1\n    while l<r:\n        s=numbers[l]+numbers[r]\n        if s==target:return [l+1,r+1]\n        elif s<target:l+=1\n        else:r-=1'},
+  ],
+  'Sliding Window':[
+    {t:'Best Time to Buy Stock',d:'Easy',desc:'Given prices array, return the maximum profit from one buy and one sell. Return 0 if no profit possible.',inp:'prices=[7,1,5,3,6,4]',out:'5',h1:'Track the minimum price seen so far as you scan left to right.',h2:'At each price: profit = price - minSeen. Track maximum of all profits.',start:'def maxProfit(prices):\n    # Your solution here\n    pass',sol:'def maxProfit(prices):\n    minP,maxP=float("inf"),0\n    for p in prices:\n        minP=min(minP,p)\n        maxP=max(maxP,p-minP)\n    return maxP'},
+    {t:'Longest Substring No Repeat',d:'Medium',desc:'Find the length of the longest substring without repeating characters.',inp:'s="abcabcbb"',out:'3',h1:'Maintain a sliding window and a set of characters in the current window.',h2:'When a repeat is found, shrink the window from the left until it\'s removed.',start:'def lengthOfLongestSubstring(s):\n    # Your solution here\n    pass',sol:'def lengthOfLongestSubstring(s):\n    seen,l,res=set(),0,0\n    for r in range(len(s)):\n        while s[r] in seen:seen.remove(s[l]);l+=1\n        seen.add(s[r]);res=max(res,r-l+1)\n    return res'},
+  ],
+  'Stack & Queue':[
+    {t:'Valid Parentheses',d:'Easy',desc:'Given a string of brackets, return true if all brackets are correctly opened and closed in the right order.',inp:'s="()[]{}"',out:'True',h1:'Use a stack — push opening brackets, pop when you see a closing one.',h2:'If the stack top doesn\'t match the closing bracket, return False immediately.',start:'def isValid(s):\n    # Your solution here\n    pass',sol:'def isValid(s):\n    st,m=[],{")":"(","]":"[","}":"{"}\n    for c in s:\n        if c in m:\n            if not st or st[-1]!=m[c]:return False\n            st.pop()\n        else:st.append(c)\n    return not st'},
+  ],
+  'Binary Search':[
+    {t:'Binary Search',d:'Easy',desc:'Given a sorted array of distinct integers and a target, return the index if found, else -1. Must be O(log n).',inp:'nums=[-1,0,3,5,9,12], target=9',out:'4',h1:'Keep left and right pointers and check the middle element each iteration.',h2:'If mid < target, search right half (l=mid+1). If mid > target, search left (r=mid-1).',start:'def search(nums, target):\n    # Your solution here\n    pass',sol:'def search(nums,target):\n    l,r=0,len(nums)-1\n    while l<=r:\n        m=(l+r)//2\n        if nums[m]==target:return m\n        elif nums[m]<target:l=m+1\n        else:r=m-1\n    return -1'},
+  ],
+  'Linked Lists':[
+    {t:'Reverse Linked List',d:'Easy',desc:'Given the head of a singly linked list, reverse it and return the new head.',inp:'head=[1,2,3,4,5]',out:'[5,4,3,2,1]',h1:'You need three variables: prev, curr, and a temp for next.',h2:'At each step: save next node, point curr.next to prev, advance both pointers.',start:'def reverseList(head):\n    # class ListNode:\n    #   def __init__(self, val=0, next=None): ...\n    pass',sol:'def reverseList(head):\n    prev=None\n    while head:\n        nxt=head.next;head.next=prev;prev=head;head=nxt\n    return prev'},
+  ],
+  'Dynamic Programming':[
+    {t:'Climbing Stairs',d:'Easy',desc:'You can climb 1 or 2 steps at a time. In how many distinct ways can you reach the top of n steps?',inp:'n=5',out:'8',h1:'Think about how many ways to reach step n: it\'s ways(n-1) + ways(n-2).',h2:'This is Fibonacci! Base cases: 1 step=1 way, 2 steps=2 ways.',start:'def climbStairs(n):\n    # Your solution here\n    pass',sol:'def climbStairs(n):\n    if n<=2:return n\n    a,b=1,2\n    for _ in range(3,n+1):a,b=b,a+b\n    return b'},
+  ],
+};
+
+Object.keys(QS).forEach(t=>done[t]=[]);
+
+function renderSidebar(){
+  document.getElementById('topicList').innerHTML=Object.keys(QS).map(t=>{
+    const total=QS[t].length, doneN=done[t].length;
+    const pct=Math.round(doneN/total*100);
+    const dots=QS[t].map((_,i)=>`<div class="qd ${done[t].includes(i)?'done':curTopic===t&&curQ===i?'cur':''}"></div>`).join('');
+    return `<div class="topic${curTopic===t?' active':''}" onclick="pick('${t.replace(/'/g,"\\'")}')">
+      <div class="tn">${t}</div>
+      <div class="tm"><span style="color:${doneN===total?'var(--green)':'var(--muted)'}">${doneN}/${total}</span><div class="tbar"><div class="tbar-fill" style="width:${pct}%"></div></div></div>
+      <div class="qdots">${dots}</div>
+    </div>`;
+  }).join('');
+}
+
+function pick(t){
+  curTopic=t; curQ=0;
+  renderSidebar();
+  showQ();
+  bot(`📚 <strong>${t}</strong> — let's go! Read the problem carefully, then write your solution. I'm watching and will help if you get stuck 👀`);
+  setChips(['What does this ask?','What data structure?','Give me a hint']);
+}
+
+function showQ(){
+  const q=QS[curTopic]?.[curQ];
+  if(!q) return;
+  const diffCls=q.d==='Easy'?'easy':q.d==='Medium'?'med':'hard';
+  document.getElementById('probArea').innerHTML=`
+    <div class="prob-meta">
+      <span class="diff ${diffCls}">${q.d}</span>
+      <span class="qn">${curTopic} · Q${curQ+1}/${QS[curTopic].length}</span>
+    </div>
+    <div class="pt">${q.t}</div>
+    <div class="pd">${q.desc}</div>
+    <div class="ex">
+      <div class="ex-lbl">Example</div>
+      <div class="ex-in">Input: ${q.inp}</div>
+      <div class="ex-out">Output: ${q.out}</div>
+    </div>`;
+  document.getElementById('editor').value=q.start;
+  document.getElementById('runOut').classList.remove('show');
+  document.getElementById('codeWrap').style.display='flex';
+  document.getElementById('codeWrap').style.flexDirection='column';
+  startTimer(); startStuck();
+  renderSidebar();
+}
+
+// Timer
+function startTimer(){
+  clearInterval(timerInt); secs=0;
+  timerInt=setInterval(()=>{
+    secs++;
+    document.getElementById('timer').textContent=`⏱ ${Math.floor(secs/60)}:${(secs%60).toString().padStart(2,'0')}`;
+  },1000);
+}
+
+// Stuck detector
+let lastCode='';
+function onType(){
+  const code=document.getElementById('editor').value;
+  if(code!==lastCode){lastCode=code;lastType=Date.now();}
+  document.getElementById('stuckBar').classList.remove('show');
+  clearTimeout(stuckInt);
+  stuckInt=setTimeout(()=>{if(Date.now()-lastType>40000)document.getElementById('stuckBar').classList.add('show');},42000);
+}
+function startStuck(){lastCode='';lastType=Date.now();clearTimeout(stuckInt);document.getElementById('stuckBar').classList.remove('show');stuckInt=setTimeout(()=>document.getElementById('stuckBar').classList.add('show'),60000);}
+
+function autoHelp(){
+  document.getElementById('stuckBar').classList.remove('show');
+  const q=QS[curTopic]?.[curQ];
+  const code=document.getElementById('editor').value;
+  const early=!code.trim()||code===q?.start;
+  bot(`💡 ${early?q?.h1:q?.h2}`);
+}
+
+// Hint button
+function giveHint(){
+  const q=QS[curTopic]?.[curQ];
+  if(!q){bot('Pick a topic first!');return;}
+  const code=document.getElementById('editor').value;
+  const early=!code.trim()||code===q.start;
+  bot(`💡 <strong>Hint ${early?'1':'2'}:</strong> ${early?q.h1:q.h2}`);
+  // Try AI hint too
+  aiCall(`For "${q.t}", student wrote:\n${code||'[blank]'}\nGive ONE more targeted hint in 1 sentence. Don't reveal the answer.`)
+    .then(r=>{if(r)bot('🔍 '+r);}).catch(()=>{});
+}
+
+// Submit
+function submitCode(){
+  const q=QS[curTopic]?.[curQ];
+  if(!q)return;
+  const code=document.getElementById('editor').value.trim();
+  if(!code||code===q.start){showOut('⚠️ Write your solution first!','var(--yellow)');return;}
+  showOut('⚙️ Checking…','var(--muted)');
+  aiCall(`Problem: "${q.t}". Example: ${q.inp} → ${q.out}.\nStudent code:\n${code}\nReference solution:\n${q.sol}\nIs the student's logic correct? Reply: start with ✅ if correct or ❌ if wrong. Then 1-2 sentences of feedback. If wrong, give ONE hint (don't reveal full answer).`)
+    .then(r=>{
+      const ok=r.startsWith('✅');
+      showOut(r,ok?'var(--green)':'var(--red)');
+      bot(ok?`🎉 ${r}<br><br>+10 XP! Click <strong>Next →</strong> for the next problem.`:r);
+      if(ok){
+        if(!done[curTopic].includes(curQ))done[curTopic].push(curQ);
+        xp+=10;document.getElementById('xpVal').textContent=xp;
+        clearInterval(timerInt);renderSidebar();
+        setChips(['Next problem','Explain time complexity','What is space complexity?']);
+      } else {
+        setChips(['Give another hint','Explain the approach','Show me an example']);
+      }
+    })
+    .catch(()=>{
+      // Offline fallback — basic heuristic
+      const hasReturn=code.includes('return');
+      const longer=code.length>q.start.length+20;
+      const msg=hasReturn&&longer?'✅ Looks correct! (Full AI check on Vercel)':'❌ Not quite. Hint: '+q.h1;
+      showOut(msg,hasReturn&&longer?'var(--green)':'var(--red)');
+      bot(msg);
+    });
+}
+
+function nextQ(){
+  if(!curTopic)return;
+  if(curQ<QS[curTopic].length-1){curQ++;showQ();bot('💪 Next problem! Take your time reading it.');}
+  else bot('🏆 You finished all problems in <strong>'+curTopic+'</strong>! Pick another topic.');
+}
+
+function showOut(msg,color){
+  const el=document.getElementById('runOut');
+  el.style.color=color;el.textContent=msg;el.classList.add('show');
+}
+
+// Chat
+function send(){
+  const inp=document.getElementById('cinp');
+  const msg=inp.value.trim();if(!msg)return;
+  addMsg('user',msg);inp.value='';
+  const q=QS[curTopic]?.[curQ];
+  const code=document.getElementById('editor').value;
+  const id=addMsg('ai','<span class="dots"><span></span><span></span><span></span></span>');
+  aiCall(`You are a coding tutor. Problem: "${q?.t||'general coding'}". Student code:\n${code||'[none yet]'}\nStudent: "${msg}"\nReply in max 3 sentences. Guide, don't give away answer.`)
+    .then(r=>upd(id,r))
+    .catch(()=>upd(id,`💡 ${q?q.h1:'Pick a topic and start coding — I\'ll watch and help!'}`));
+}
+
+function setChips(arr){
+  document.getElementById('chips').innerHTML=arr.map(h=>`<div class="chip" onclick="quickAsk('${h.replace(/'/g,"\\'")}');">${h}</div>`).join('');
+}
+function quickAsk(t){document.getElementById('cinp').value=t;send();}
+
+let mid=0;
+function bot(html){return addMsg('ai',html);}
+function addMsg(role,html){
+  const id='m'+(++mid);
+  const isU=role==='user';
+  document.getElementById('msgs').innerHTML+=`<div class="msg ${role}" id="${id}">
+    <div class="mav" style="background:${isU?'rgba(34,211,238,.1)':'rgba(74,222,128,.1)'}">${isU?'👤':'🤖'}</div>
+    <div class="bbl">${html}</div></div>`;
+  document.getElementById('msgs').scrollTop=99999;
+  return id;
+}
+function upd(id,html){const el=document.getElementById(id);if(el)el.querySelector('.bbl').innerHTML=html;document.getElementById('msgs').scrollTop=99999;}
+
+async function aiCall(prompt){
+  const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${KEY}`,{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:.5,maxOutputTokens:300}})
+  });
+  const d=await r.json();
+  if(!r.ok||d.error)throw new Error('API error');
+  return d.candidates?.[0]?.content?.parts?.[0]?.text||'';
+}
+
+// Init
+renderSidebar();
+bot('👋 Hey! Pick any topic on the left — problems will load instantly. I\'ll watch your code and help you automatically when you\'re stuck!');
+setChips(['What topics are available?','How does this work?','Start with Arrays']);
+</script>
+</body>
+</html>
