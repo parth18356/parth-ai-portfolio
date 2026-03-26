@@ -5,3 +5,8 @@ const KEY='AIzaSyDwf43Hrp8ItWbkr8vm8c9ph9CjRkZllVw';
 
 For latest key - https://aistudio.google.com/api-keys
 Updated key files in drive within "parth-ai"
+
+
+Private -> public  : We need to generate new key from above link and replace in ai-tutor.html,code-review.html,system-design.html
+
+
