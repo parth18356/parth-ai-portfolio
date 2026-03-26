@@ -942,7 +942,7 @@ function spawnParticles(){
 
 // STATS
 function animateStats(){
-  [{id:'s1',t:4,s:'+'},{id:'s2',t:160,s:'+'},{id:'s3',t:3,s:''},{id:'s4',t:6,s:'+'}].forEach(d=>{
+  [{id:'s1',t:4,s:'+'},{id:'s2',t:160,s:'+'},{id:'s3',t:3,s:''},{id:'s4',t:75,s:'+'}].forEach(d=>{
     let v=0;const el=document.getElementById(d.id);
     const iv=setInterval(()=>{v++;el.textContent=v+d.s;if(v>=d.t)clearInterval(iv);},60);
   });
