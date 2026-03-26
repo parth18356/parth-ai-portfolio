@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Parth Singh — Senior Software Engineer</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230f172a'/><rect x='25' y='30' width='50' height='45' rx='10' fill='none' stroke='%2322d3ee' stroke-width='4'/><circle cx='38' cy='48' r='5' fill='%2322d3ee'/><circle cx='62' cy='48' r='5' fill='%2322d3ee'/><rect x='38' y='62' width='24' height='4' rx='2' fill='%234ade80'/><rect x='46' y='18' width='4' height='12' rx='2' fill='%2322d3ee'/><circle cx='48' cy='15' r='5' fill='%2322d3ee'/></svg>" type="image/svg+xml">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{--cyan:#22d3ee;--blue:#38bdf8;--green:#4ade80;--purple:#818cf8;--dark:#0a0a0f;--dark2:#0f172a;--dark3:#1e293b;--text:#e2e8f0;--muted:#94a3b8;}
@@ -117,7 +118,7 @@ section{padding:80px 48px;border-top:.5px solid var(--dark3);}
 .contact-photo{width:160px;height:160px;border-radius:16px;overflow:hidden;border:.5px solid var(--dark3);}
 .contact-photo img{width:100%;height:100%;object-fit:cover;}
 .contact-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.c-card{background:#0f172a;border:.5px solid var(--dark3);border-radius:10px;padding:16px;display:flex;align-items:center;gap:14px;transition:all .2s;cursor:pointer;}
+.c-card{background:#0f172a;border:.5px solid var(--dark3);border-radius:10px;padding:16px;display:flex;align-items:center;gap:14px;transition:all .2s;cursor:pointer;text-decoration:none;color:inherit;}
 .c-card:hover{border-color:var(--cyan);transform:translateX(4px);}
 .c-icon{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0;}
 .c-title{font-size:12px;font-weight:600;color:#f1f5f9;}
@@ -148,7 +149,26 @@ footer{padding:28px 48px;border-top:.5px solid var(--dark3);display:flex;align-i
 @keyframes blink{0%,88%,100%{transform:scaleY(1)}93%{transform:scaleY(.1)}}
 @keyframes antP{0%,100%{opacity:1;transform:translateX(-50%) scale(1)}50%{opacity:.3;transform:translateX(-50%) scale(1.5)}}
 
-/* SCANLINE */
+/* LOADER */
+#loader{position:fixed;inset:0;background:var(--dark);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .6s;}
+#loader.hide{opacity:0;pointer-events:none;}
+.loader-bot{width:80px;height:80px;background:var(--dark2);border:2px solid var(--cyan);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;position:relative;animation:lbob 1.5s ease-in-out infinite;}
+.loader-bot::before{content:'';position:absolute;top:-14px;left:50%;transform:translateX(-50%);width:3px;height:12px;background:var(--cyan);}
+.loader-bot::after{content:'';position:absolute;top:-20px;left:50%;transform:translateX(-50%);width:8px;height:8px;border-radius:50%;background:var(--cyan);animation:lpulse 1s ease-in-out infinite;}
+.lb-eyes{display:flex;gap:10px;}
+.lb-eye{width:10px;height:10px;border-radius:50%;background:var(--cyan);animation:lblink 3s ease-in-out infinite;}
+.lb-eye:last-child{animation-delay:.2s;}
+.lb-mouth{width:20px;height:3px;background:var(--green);border-radius:2px;}
+.lb-shadow{width:50px;height:6px;background:var(--cyan);opacity:.15;border-radius:50%;animation:lshadow 1.5s ease-in-out infinite;}
+@keyframes lbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes lpulse{0%,100%{opacity:1;transform:translateX(-50%) scale(1)}50%{opacity:.3;transform:translateX(-50%) scale(1.5)}}
+@keyframes lblink{0%,88%,100%{transform:scaleY(1)}93%{transform:scaleY(.1)}}
+@keyframes lshadow{0%,100%{opacity:.15;width:50px}50%{opacity:.06;width:35px}}
+.loader-text{font-size:13px;color:var(--cyan);font-family:'Courier New',monospace;letter-spacing:.12em;}
+.loader-sub{font-size:11px;color:var(--muted);font-family:system-ui;letter-spacing:.06em;}
+.loader-bar{width:200px;height:2px;background:var(--dark3);border-radius:2px;overflow:hidden;}
+.loader-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--purple));border-radius:2px;animation:lfill 1.8s ease forwards;}
+@keyframes lfill{0%{width:0}100%{width:100%}}
 .scanline{pointer-events:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:8000;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.02) 2px,rgba(0,0,0,.02) 4px);}
 
 @media(max-width:768px){
@@ -162,6 +182,17 @@ footer{padding:28px 48px;border-top:.5px solid var(--dark3);display:flex;align-i
 </style>
 </head>
 <body>
+<div id="loader">
+  <div class="loader-bot">
+    <div class="lb-eyes"><div class="lb-eye"></div><div class="lb-eye"></div></div>
+    <div class="lb-mouth"></div>
+  </div>
+  <div class="lb-shadow"></div>
+  <div class="loader-text" id="loader-txt">Initializing Parth.ai...</div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+  <div class="loader-sub">Loading portfolio...</div>
+</div>
+
 <div class="scanline"></div>
 
 <!-- BOT -->
@@ -177,7 +208,6 @@ footer{padding:28px 48px;border-top:.5px solid var(--dark3);display:flex;align-i
   🎉 Congratulations!!<br>
   <span style="color:#f1f5f9;font-size:11px;display:block;margin-top:6px;line-height:1.6;">You're faster than most humans I've met! 🏆</span>
   <span style="color:var(--cyan);font-size:11px;display:block;margin-top:8px;">Connect with my master for your reward ↓</span>
-  <a href="#contact" style="display:inline-block;margin-top:8px;font-size:10px;padding:5px 14px;background:rgba(34,211,238,.15);color:var(--cyan);border:.5px solid rgba(34,211,238,.3);border-radius:6px;text-decoration:none;font-family:'Courier New',monospace;">Meet Parth →</a>
 </div>
 
 <!-- NAV -->
@@ -225,7 +255,10 @@ footer{padding:28px 48px;border-top:.5px solid var(--dark3);display:flex;align-i
         <div class="avatar-ring"></div>
         <div class="avatar-ring2"></div>
         <div class="hero-avatar">
-          <img src="parth.jpg" style="width:100%;height:100%;object-fit:cover;">
+          <div class="avatar-initials">
+            <span style="font-size:52px;font-weight:700;color:var(--blue);font-family:system-ui;">PS</span>
+            <span style="font-size:11px;color:var(--muted);letter-spacing:.1em;">PARTH SINGH</span>
+          </div>
         </div>
         <div class="hero-avatar-tag">GEP Worldwide · IIIT Delhi</div>
       </div>
@@ -899,10 +932,10 @@ showLB('all');
       </div>
     </div>
     <div class="contact-cards">
-      <div class="c-card"><div class="c-icon" style="background:rgba(56,189,248,.1);color:var(--blue);">✉</div><div><div class="c-title">Email</div><div class="c-val">parthsinghaug2000@gmail.com</div></div></div>
-      <div class="c-card"><div class="c-icon" style="background:rgba(129,140,248,.1);color:#a78bfa;font-size:12px;font-family:system-ui;">GH</div><div><div class="c-title">GitHub</div><div class="c-val">github.com/parthsingh</div></div></div>
-      <div class="c-card"><div class="c-icon" style="background:rgba(74,222,128,.1);color:var(--green);font-size:12px;font-family:system-ui;">in</div><div><div class="c-title">LinkedIn</div><div class="c-val">linkedin.com/in/parthsingh</div></div></div>
-      <div class="c-card"><div class="c-icon" style="background:rgba(251,191,36,.1);color:#fbbf24;">📱</div><div><div class="c-title">Phone</div><div class="c-val">+91 98739 36734</div></div></div>
+      <a class="c-card" href="mailto:parthsinghaug2000@gmail.com"><div class="c-icon" style="background:rgba(56,189,248,.1);color:var(--blue);">✉</div><div><div class="c-title">Email — Click to Send</div><div class="c-val">parthsinghaug2000@gmail.com</div></div></a>
+      <a class="c-card" href="https://github.com/parth18356" target="_blank" rel="noopener"><div class="c-icon" style="background:rgba(129,140,248,.1);color:#a78bfa;font-size:12px;font-family:system-ui;">GH</div><div><div class="c-title">GitHub</div><div class="c-val">github.com/parth18356</div></div></a>
+      <a class="c-card" href="https://www.linkedin.com/in/parth18356/" target="_blank" rel="noopener"><div class="c-icon" style="background:rgba(74,222,128,.1);color:var(--green);font-size:12px;font-family:system-ui;">in</div><div><div class="c-title">LinkedIn</div><div class="c-val">linkedin.com/in/parth18356</div></div></a>
+      <a class="c-card" href="tel:+919873936734"><div class="c-icon" style="background:rgba(251,191,36,.1);color:#fbbf24;">📱</div><div><div class="c-title">Phone — Tap to Call</div><div class="c-val">+91 98739 36734</div></div></a>
       <div class="c-card" style="grid-column:span 2;" onclick="downloadResume()"><div class="c-icon" style="background:rgba(244,63,94,.1);color:#f43f5e;">↓</div><div><div class="c-title">Resume PDF — Click to Download</div><div class="c-val">Parth Singh · Senior SWE @ GEP Worldwide · IIIT Delhi '22</div></div></div>
     </div>
   </div>
@@ -914,6 +947,17 @@ showLB('all');
 </footer>
 
 <script>
+// LOADER
+const loaderMsgs=['Initializing Parth.ai...','Loading AI projects...','Booting game engine...','Almost ready... 🚀'];
+let li=0;
+const ltxt=document.getElementById('loader-txt');
+const lInt=setInterval(()=>{li++;if(li<loaderMsgs.length)ltxt.textContent=loaderMsgs[li];},450);
+setTimeout(()=>{
+  clearInterval(lInt);
+  document.getElementById('loader').classList.add('hide');
+  setTimeout(()=>document.getElementById('loader').style.display='none',600);
+},2000);
+
 // ── RESUME DOWNLOAD ──
 const RESUME_URL = 'https://raw.githubusercontent.com/parth18356/parth-ai-portfolio/main/resume.pdf';
 function downloadResume(){
@@ -925,6 +969,8 @@ function downloadResume(){
   a.click();
   document.body.removeChild(a);
 }
+
+function gmClose(){document.getElementById('gm-modal').style.display='none';}
 
 function goTo(id){
   const el=document.getElementById(id);
