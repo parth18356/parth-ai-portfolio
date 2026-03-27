@@ -39,7 +39,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;display:grid;grid-template-c
 .btn-o{padding:14px 28px;background:transparent;color:var(--cyan);border-radius:8px;border:.5px solid #334155;cursor:pointer;font-size:14px;transition:all .2s;}
 .btn-o:hover{border-color:var(--cyan);background:rgba(34,211,238,.06);}
 .hero-stats{display:flex;gap:48px;margin-top:52px;opacity:0;animation:slideUp .6s 1.3s forwards;}
-.stat-v{font-size:38px;font-weight:700;color:#f1f5f9;}
+.stat-v{font-size:38px;font-weight:700;color:#f1f5f9;min-width:80px;display:inline-block;text-align:left;}
 .stat-l{font-size:12px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:4px;}
 .hero-avatar-wrap{opacity:0;animation:slideUp .6s 1s forwards;position:relative;}
 .hero-avatar{width:220px;height:220px;border-radius:50%;border:2px solid rgba(56,189,248,.4);overflow:hidden;box-shadow:0 0 40px rgba(56,189,248,.15);position:relative;z-index:2;}
@@ -176,16 +176,18 @@ footer{padding:28px 48px;border-top:.5px solid var(--dark3);display:flex;align-i
   nav{padding:12px 16px;grid-template-columns:1fr auto;}
   .nav-links{display:none;}
   .hero{padding:80px 20px 60px;}
-  .hero-content{flex-direction:column-reverse;gap:24px;align-items:center;text-align:center;}
-  .hero-left{max-width:100%;}
+  .hero-content{flex-direction:column;gap:24px;align-items:center;text-align:center;}
+  .hero-left{max-width:100%;width:100%;}
   .hero-tag{justify-content:center;}
   .hero-name{font-size:38px;}
-  .hero-sub{font-size:14px;}
-  .hero-btns{justify-content:center;}
-  .hero-stats{justify-content:center;gap:24px;}
-  .hero-avatar-wrap{margin-top:0;}
-  .hero-avatar{width:160px;height:160px;}
-  .hero-avatar-tag{font-size:9px;padding:4px 10px;}
+  .hero-sub{font-size:14px;max-width:100%;}
+  .hero-btns{justify-content:center;flex-wrap:wrap;}
+  .hero-stats{justify-content:center;gap:24px;flex-wrap:wrap;}
+  .hero-avatar-wrap{margin-top:0;width:100%;display:flex;justify-content:center;}
+  .hero-avatar{width:180px;height:180px;min-width:180px;min-height:180px;}
+  .avatar-ring{inset:-6px;}
+  .avatar-ring2{inset:-12px;}
+  .hero-avatar-tag{font-size:9px;padding:4px 10px;white-space:nowrap;}
   section{padding:60px 20px;}
   .sec-title{font-size:24px;}
   .cards-grid{grid-template-columns:1fr;}
@@ -197,11 +199,12 @@ footer{padding:28px 48px;border-top:.5px solid var(--dark3);display:flex;align-i
   .demo-tabs{flex-wrap:wrap;}
   .demo-tab{font-size:11px;padding:8px 12px;}
   .gtab-m{font-size:11px;padding:7px 12px;}
-  .score-grid{grid-template-columns:repeat(2,1fr) !important;}
   footer{flex-direction:column;gap:12px;text-align:center;padding:20px;}
   .f-links{justify-content:center;}
   .hero-pills{justify-content:center;}
   .caught-msg{max-width:200px;font-size:11px;}
+  .g-body-m{padding:12px;}
+  canvas{max-width:100% !important;height:auto !important;}
 }
 </style>
 </head>
@@ -290,7 +293,8 @@ footer{padding:28px 48px;border-top:.5px solid var(--dark3);display:flex;align-i
         <div class="avatar-ring2"></div>
         <div class="hero-avatar">
           <div class="avatar-initials">
-            <img src="parth.jpg" style="width:100%;height:100%;object-fit:cover;">
+            <span style="font-size:52px;font-weight:700;color:var(--blue);font-family:system-ui;">PS</span>
+            <span style="font-size:11px;color:var(--muted);letter-spacing:.1em;">PARTH SINGH</span>
           </div>
         </div>
         <div class="hero-avatar-tag">GEP Worldwide · IIIT Delhi</div>
@@ -715,6 +719,64 @@ window.addEventListener('resize',()=>{
   if(window.innerWidth>768)document.getElementById('mob-menu').style.display='none';
 });
 
+// ── MOBILE CONTROLS ──
+const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth <= 768;
+
+// Gyroscope for space shooter & breakout (mobile only)
+if(isMobile && window.DeviceOrientationEvent){
+  window.addEventListener('deviceorientation', e => {
+    const tilt = e.gamma;
+    if(!tilt) return;
+    if(gmCurrentGame==='space' && spRunning){
+      spShip.x = Math.max(0, Math.min(spCW - spShip.w, spShip.x + tilt * 0.3));
+    }
+    if(gmCurrentGame==='breakout' && bkRunning){
+      bkPad.x = Math.max(0, Math.min(bkCW - bkPad.w, bkPad.x + tilt * 0.5));
+    }
+  });
+}
+
+// Touch swipe for snake (mobile only)
+let touchStartX=0, touchStartY=0;
+if(isMobile){
+  document.addEventListener('touchstart', e => {
+    touchStartX=e.touches[0].clientX;
+    touchStartY=e.touches[0].clientY;
+    // tap to jump (dino) or shoot (space)
+    if(gmCurrentGame==='dino') dmJump();
+    if(gmCurrentGame==='space' && Date.now()-gmLastShoot>200){ spShoot(); gmLastShoot=Date.now(); }
+  }, {passive:true});
+
+  document.addEventListener('touchend', e => {
+    if(gmCurrentGame!=='snake') return;
+    const dx=e.changedTouches[0].clientX-touchStartX;
+    const dy=e.changedTouches[0].clientY-touchStartY;
+    if(Math.abs(dx)>Math.abs(dy)){
+      if(dx>30 && snDir.x===0) snDir={x:1,y:0};
+      if(dx<-30 && snDir.x===0) snDir={x:-1,y:0};
+    } else {
+      if(dy>30 && snDir.y===0) snDir={x:0,y:1};
+      if(dy<-30 && snDir.y===0) snDir={x:0,y:-1};
+    }
+  }, {passive:true});
+}
+
+// Update game control hints based on device
+function updateControlHints(){
+  const hints = {
+    dino:     isMobile ? 'Tap anywhere to jump · Double tap = double jump' : 'Space / Click to jump · Double jump supported',
+    snake:    isMobile ? 'Swipe to change direction' : 'Arrow keys or WASD to move',
+    space:    isMobile ? 'Tilt phone to move · Tap to shoot' : '← → Arrow keys to move · Space to shoot',
+    breakout: isMobile ? 'Tilt phone to move paddle' : 'Mouse or ← → keys to move paddle',
+    memory:   'Tap cards to flip · Match all pairs to win'
+  };
+  document.querySelectorAll('[id$="-overlay"] p, .game-controls').forEach(el => {
+    const game = Object.keys(hints).find(g => el.closest('[id^="gm-'+g+'"]') || el.closest('[id^="panel-'+g+'"]'));
+    if(game) el.textContent = hints[game];
+  });
+}
+setTimeout(updateControlHints, 300);
+
 function gmClose(){document.getElementById('gm-modal').style.display='none';}
 
 function switchG(id,btn){
@@ -729,15 +791,25 @@ function switchG(id,btn){
 function gmStopAll(){clearInterval(dmInt);clearInterval(snInt);clearInterval(spInt);clearInterval(bkInt2);}
 
 function gmGameOver(game,score,emoji,label){
-  const ov=document.getElementById(game.substring(0,2)+'-overlay');
-  const gnames={dino:'Dino Runner',snake:'Snake',space:'Space Shooter',breakout:'Breakout',memory:'Memory Cards'};
-  ov.innerHTML=`<div style="font-size:40px">${emoji}</div><h3 style="color:#f87171">Game Over!</h3><div style="font-size:36px;font-weight:700;color:#22d3ee">${score}</div><p style="color:#64748b">${label}</p><button class="gplay-btn" onclick="g${game.charAt(0).toUpperCase()+game.slice(1)}Restart()">▶ Play Again</button>`;
+  const idMap={dino:'dm',snake:'sn',space:'sp',breakout:'bk',memory:'mc'};
+  const prefix=idMap[game];
+  const ov=document.getElementById(prefix+'-overlay');
+  if(!ov)return;
+  ov.innerHTML=`
+    <div style="font-size:40px">${emoji}</div>
+    <h3 style="color:#f87171;font-size:20px;font-weight:700;">Game Over!</h3>
+    <div style="font-size:36px;font-weight:700;color:#22d3ee;margin:8px 0;">${score}</div>
+    <p style="color:#64748b;font-size:13px;">${label}</p>
+    <button class="gplay-btn" onclick="g${game.charAt(0).toUpperCase()+game.slice(1)}Restart()" style="margin-top:8px;">▶ Play Again</button>`;
   ov.style.display='flex';
   gmModal(game,score,emoji,label);
 }
 
 // KEY HANDLING
 document.addEventListener('keydown',e=>{
+  const tag=document.activeElement.tagName;
+  const isTyping=tag==='INPUT'||tag==='TEXTAREA'||document.activeElement.isContentEditable;
+  if(isTyping)return;
   gmKeys[e.key]=true;
   if(e.key===' '){e.preventDefault();if(gmCurrentGame==='dino')dmJump();if(gmCurrentGame==='space'&&Date.now()-gmLastShoot>200){spShoot();gmLastShoot=Date.now();}}
   if(gmCurrentGame==='snake'){
@@ -1033,8 +1105,15 @@ function spawnParticles(){
 // STATS
 function animateStats(){
   [{id:'s1',t:4,s:'+'},{id:'s2',t:160,s:'+'},{id:'s3',t:3,s:''},{id:'s4',t:75,s:'+'}].forEach(d=>{
-    let v=0;const el=document.getElementById(d.id);
-    const iv=setInterval(()=>{v++;el.textContent=v+d.s;if(v>=d.t)clearInterval(iv);},60);
+    const el=document.getElementById(d.id);
+    if(!el)return;
+    el.textContent=d.t+d.s;
+    let v=0;
+    const iv=setInterval(()=>{
+      v++;
+      el.textContent=v+d.s;
+      if(v>=d.t)clearInterval(iv);
+    },60);
   });
 }
 
