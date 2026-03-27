@@ -9,28 +9,24 @@
 :root{--bg:#0a0a0f;--bg2:#0f172a;--bg3:#1e293b;--cyan:#22d3ee;--blue:#38bdf8;--green:#4ade80;--purple:#a78bfa;--yellow:#fbbf24;--text:#e2e8f0;--muted:#64748b;}
 body{background:var(--bg);color:var(--text);font-family:'Courier New',monospace;min-height:100vh;}
 nav{background:rgba(10,10,15,.95);border-bottom:.5px solid var(--bg3);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-.nav-logo{color:var(--cyan);font-size:14px;font-weight:700;}
-.nav-logo span{color:#f1f5f9;}
+.nav-logo{color:var(--cyan);font-size:14px;font-weight:700;}.nav-logo span{color:#f1f5f9;}
 .nav-badge{font-size:10px;padding:3px 10px;border-radius:4px;background:rgba(167,139,250,.1);color:var(--purple);border:.5px solid rgba(167,139,250,.25);}
 .container{max-width:1200px;margin:0 auto;padding:32px 24px;}
-h1{font-size:28px;color:#f1f5f9;font-family:system-ui;font-weight:700;margin-bottom:8px;}
-h1 span{color:var(--purple);}
+h1{font-size:28px;color:#f1f5f9;font-family:system-ui;font-weight:700;margin-bottom:8px;}h1 span{color:var(--purple);}
 .subtitle{color:var(--muted);font-size:13px;font-family:system-ui;margin-bottom:32px;line-height:1.7;}
 .card{background:var(--bg2);border:.5px solid var(--bg3);border-radius:12px;padding:24px;margin-bottom:20px;}
 .card-title{font-size:11px;color:var(--cyan);letter-spacing:.15em;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
 .card-title::after{content:'';flex:1;height:.5px;background:var(--bg3);}
 .inp{background:#070b13;border:.5px solid var(--bg3);border-radius:6px;padding:10px 14px;font-size:12px;color:var(--text);font-family:'Courier New',monospace;width:100%;transition:border-color .2s;}
 .inp:focus{outline:none;border-color:var(--cyan);}
-.btn{padding:10px 20px;border-radius:6px;font-size:12px;font-family:'Courier New',monospace;font-weight:700;border:none;cursor:pointer;transition:all .2s;}
-.btn-primary{background:var(--purple);color:#0a0a0f;}
+.btn-primary{background:var(--purple);color:#0a0a0f;padding:14px 28px;border-radius:6px;font-size:13px;font-family:'Courier New',monospace;font-weight:700;border:none;cursor:pointer;transition:all .2s;}
 .btn-primary:hover{background:#c084fc;}
-.btn-secondary{background:transparent;color:var(--cyan);border:.5px solid var(--bg3);}
-.btn-secondary:hover{border-color:var(--cyan);}
+.btn-primary:disabled{background:#334155;color:#64748b;cursor:not-allowed;}
 .prompt-row{display:flex;gap:12px;align-items:stretch;}
 .prompt-row .inp{font-size:14px;padding:14px 18px;flex:1;}
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
 .chip{font-size:11px;padding:5px 12px;border-radius:20px;background:rgba(167,139,250,.08);color:var(--purple);border:.5px solid rgba(167,139,250,.2);cursor:pointer;transition:all .2s;font-family:system-ui;}
-.chip:hover{background:rgba(167,139,250,.18);border-color:var(--purple);}
+.chip:hover{background:rgba(167,139,250,.18);}
 .scale-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;}
 .scale-opt{background:#070b13;border:.5px solid var(--bg3);border-radius:6px;padding:10px;text-align:center;cursor:pointer;transition:all .2s;}
 .scale-opt.selected{border-color:var(--purple);background:rgba(167,139,250,.08);}
@@ -39,12 +35,14 @@ h1 span{color:var(--purple);}
 .thinking{display:flex;align-items:center;gap:10px;padding:16px;background:rgba(167,139,250,.05);border:.5px solid rgba(167,139,250,.15);border-radius:8px;font-size:12px;color:var(--purple);font-family:system-ui;margin-bottom:20px;}
 .dot-pulse{display:flex;gap:4px;}
 .dot-pulse span{width:6px;height:6px;border-radius:50%;background:var(--purple);animation:dp .8s ease-in-out infinite;}
-.dot-pulse span:nth-child(2){animation-delay:.16s;}
-.dot-pulse span:nth-child(3){animation-delay:.32s;}
+.dot-pulse span:nth-child(2){animation-delay:.16s;}.dot-pulse span:nth-child(3){animation-delay:.32s;}
 @keyframes dp{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+.out-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.out-tab{padding:9px 20px;border-radius:6px;font-size:12px;font-weight:700;border:none;cursor:pointer;background:#1e293b;color:#64748b;transition:all .2s;font-family:system-ui;}
+.out-tab.active{background:var(--purple);color:#0a0a0f;}
+.out-panel{display:none;}.out-panel.show{display:block;}
 .output-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-.arch-diagram{background:#040810;border:.5px solid var(--bg3);border-radius:10px;padding:20px;min-height:400px;overflow-x:auto;}
-.arch-diagram svg{width:100%;height:auto;}
+.arch-diagram{background:#040810;border:.5px solid var(--bg3);border-radius:10px;padding:20px;overflow-x:auto;}
 .section-hdr{font-size:11px;color:var(--cyan);letter-spacing:.12em;text-transform:uppercase;padding:8px 0;border-bottom:.5px solid var(--bg3);margin:0 0 14px;}
 .component-card{background:#070b13;border:.5px solid var(--bg3);border-radius:8px;padding:14px;margin-bottom:10px;border-left:3px solid var(--purple);}
 .comp-name{font-size:13px;font-weight:700;color:var(--purple);margin-bottom:4px;font-family:system-ui;}
@@ -58,168 +56,202 @@ h1 span{color:var(--purple);}
 .stat-mini{background:var(--bg2);border:.5px solid var(--bg3);border-radius:8px;padding:12px;text-align:center;}
 .stat-mini-val{font-size:18px;font-weight:700;color:var(--purple);font-family:system-ui;}
 .stat-mini-lbl{font-size:10px;color:var(--muted);margin-top:2px;font-family:system-ui;text-transform:uppercase;letter-spacing:.06em;}
+/* ROADMAP */
+.roadmap-phase{background:#070b13;border:.5px solid var(--bg3);border-radius:10px;padding:16px;margin-bottom:12px;border-left:4px solid var(--purple);}
+.roadmap-phase-title{font-size:13px;font-weight:700;color:#f1f5f9;font-family:system-ui;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.roadmap-phase-sub{font-size:11px;color:var(--muted);font-family:system-ui;margin-bottom:10px;}
+.roadmap-items{display:flex;flex-wrap:wrap;gap:6px;}
+.roadmap-item{font-size:11px;padding:4px 10px;border-radius:12px;font-family:system-ui;}
 </style>
 </head>
 <body>
 <nav>
   <div class="nav-logo"><span>Parth</span>.ai — <span style="color:#f1f5f9;font-size:12px;">System Design</span></div>
-  <!-- ✅ FIXED: updated badge to reflect correct model -->
-  <div class="nav-badge">Powered by Gemini 2.0 Flash · Free</div>
+  <div class="nav-badge">Groq · Llama 3 70B · Free</div>
 </nav>
-
 <div class="container">
   <h1>AI System <span>Design</span> Generator</h1>
-  <p class="subtitle">Enter any app or system name. AI generates a complete architecture diagram, component breakdown, tech stack, and scalability tradeoffs.</p>
-
+  <p class="subtitle">Enter any app. Get a full architecture diagram, visual stack picture, tech roadmap, and scalability strategy.</p>
   <div class="card">
     <div class="card-title">What do you want to design?</div>
     <div class="prompt-row">
       <input class="inp" type="text" id="promptInp" placeholder="e.g. Design a food delivery app like Zomato..." onkeydown="if(event.key==='Enter')generate()"/>
-      <button class="btn btn-primary" onclick="generate()" id="genBtn" style="padding:14px 28px;font-size:13px;">⚡ Generate</button>
+      <button class="btn-primary" onclick="generate()" id="genBtn">⚡ Generate</button>
     </div>
-    <div class="chips" id="suggestions">
-      <span class="chip" onclick="setPrompt('Real-time ride sharing app like Uber')">🚗 Ride sharing</span>
-      <span class="chip" onclick="setPrompt('Video streaming platform like Netflix')">🎬 Video streaming</span>
-      <span class="chip" onclick="setPrompt('E-commerce marketplace like Amazon')">🛒 E-commerce</span>
-      <span class="chip" onclick="setPrompt('Social media feed like Twitter/X')">🐦 Social feed</span>
-      <span class="chip" onclick="setPrompt('Payment gateway like Razorpay')">💳 Payment gateway</span>
-      <span class="chip" onclick="setPrompt('Messaging app like WhatsApp')">💬 Messaging app</span>
-      <span class="chip" onclick="setPrompt('Hotel booking system like Booking.com')">🏨 Hotel booking</span>
-      <span class="chip" onclick="setPrompt('Collaborative code editor like VS Code Live Share')">👩‍💻 Code editor</span>
+    <div class="chips">
+      <span class="chip" onclick="setPrompt('Real-time ride sharing app like Uber')">🚗 Uber</span>
+      <span class="chip" onclick="setPrompt('Video streaming platform like Netflix')">🎬 Netflix</span>
+      <span class="chip" onclick="setPrompt('E-commerce marketplace like Amazon')">🛒 Amazon</span>
+      <span class="chip" onclick="setPrompt('Social media feed like Twitter/X')">🐦 Twitter</span>
+      <span class="chip" onclick="setPrompt('Payment gateway like Razorpay')">💳 Payments</span>
+      <span class="chip" onclick="setPrompt('Messaging app like WhatsApp')">💬 WhatsApp</span>
+      <span class="chip" onclick="setPrompt('Hotel booking system like Booking.com')">🏨 Booking</span>
+      <span class="chip" onclick="setPrompt('Collaborative code editor like VS Code Live Share')">👩‍💻 Code Editor</span>
     </div>
     <div style="margin-top:20px;">
       <div style="font-size:11px;color:var(--cyan);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;">Scale Target</div>
       <div class="scale-opts">
-        <div class="scale-opt" onclick="selectScale(this,'startup')" id="scale-startup">
-          <div class="scale-opt-title">🚀 Startup</div>
-          <div class="scale-opt-sub">~1K users/day</div>
-        </div>
-        <div class="scale-opt selected" onclick="selectScale(this,'mid')" id="scale-mid">
-          <div class="scale-opt-title">📈 Mid-Scale</div>
-          <div class="scale-opt-sub">~1M users/day</div>
-        </div>
-        <div class="scale-opt" onclick="selectScale(this,'hyper')" id="scale-hyper">
-          <div class="scale-opt-title">🌐 Hyper-Scale</div>
-          <div class="scale-opt-sub">~1B users/day</div>
-        </div>
+        <div class="scale-opt" onclick="selectScale(this,'startup')"><div class="scale-opt-title">🚀 Startup</div><div class="scale-opt-sub">~1K users/day</div></div>
+        <div class="scale-opt selected" onclick="selectScale(this,'mid')"><div class="scale-opt-title">📈 Mid-Scale</div><div class="scale-opt-sub">~1M users/day</div></div>
+        <div class="scale-opt" onclick="selectScale(this,'hyper')"><div class="scale-opt-title">🌐 Hyper-Scale</div><div class="scale-opt-sub">~1B users/day</div></div>
       </div>
     </div>
   </div>
 
   <div class="thinking" id="thinking" style="display:none;">
     <div class="dot-pulse"><span></span><span></span><span></span></div>
-    <span id="thinkingTxt">Generating architecture...</span>
+    <span id="thinkingTxt">Designing your system...</span>
   </div>
 
   <div id="output" style="display:none;">
     <div class="stats-row" id="statsRow"></div>
-    <div class="output-grid">
-      <div>
-        <div class="card" style="padding:16px;">
-          <div class="section-hdr">Architecture Diagram</div>
-          <div class="arch-diagram" id="diagram"></div>
-        </div>
-      </div>
-      <div>
-        <div class="card">
-          <div class="section-hdr">Components</div>
-          <div id="components"></div>
-        </div>
+    <div class="out-tabs">
+      <button class="out-tab active" onclick="switchOut('diagram',this)">🗺️ Architecture</button>
+      <button class="out-tab" onclick="switchOut('stack',this)">📐 Stack Visual</button>
+      <button class="out-tab" onclick="switchOut('components',this)">🧩 Components</button>
+      <button class="out-tab" onclick="switchOut('roadmap',this)">🛣️ Roadmap</button>
+      <button class="out-tab" onclick="switchOut('tradeoffs',this)">⚖️ Tradeoffs</button>
+    </div>
+
+    <!-- ARCHITECTURE DIAGRAM -->
+    <div class="out-panel show" id="panel-diagram">
+      <div class="card" style="padding:16px;">
+        <div class="section-hdr">Architecture Diagram</div>
+        <div class="arch-diagram" id="diagram"></div>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-      <div class="card">
-        <div class="section-hdr">Tradeoffs & Decisions</div>
-        <div id="tradeoffs"></div>
+
+    <!-- STACK VISUAL -->
+    <div class="out-panel" id="panel-stack">
+      <div class="card" style="padding:16px;">
+        <div class="section-hdr">Tech Stack — Layer by Layer</div>
+        <div id="stackVisual" style="overflow-x:auto;"></div>
       </div>
+    </div>
+
+    <!-- COMPONENTS -->
+    <div class="out-panel" id="panel-components">
       <div class="card">
-        <div class="section-hdr">Scalability Strategy</div>
-        <div id="scalability" style="font-size:12px;color:var(--muted);font-family:system-ui;line-height:1.8;"></div>
+        <div class="section-hdr">Components Breakdown</div>
+        <div id="components"></div>
+      </div>
+    </div>
+
+    <!-- ROADMAP -->
+    <div class="out-panel" id="panel-roadmap">
+      <div class="card">
+        <div class="section-hdr">Build Roadmap — What to Learn & Use</div>
+        <div id="roadmap"></div>
+      </div>
+    </div>
+
+    <!-- TRADEOFFS -->
+    <div class="out-panel" id="panel-tradeoffs">
+      <div class="card">
+        <div class="section-hdr">Tradeoffs & Scalability Strategy</div>
+        <div id="tradeoffs"></div>
+        <div style="margin-top:16px;font-size:11px;color:var(--cyan);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">Scalability Strategy</div>
+        <div id="scalability" style="font-size:12px;color:var(--muted);font-family:system-ui;line-height:1.8;background:#070b13;padding:14px;border-radius:8px;border:.5px solid var(--bg3);"></div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-const GEMINI_KEY='AIzaSyDf-WfsNb4o2qqiwt76clagAJqj-dzrb6A';
-// ✅ FIXED: updated to stable gemini-2.0-flash model
-// ✅ FIXED: was incorrectly pointing to Anthropic API — now correctly uses Gemini
-const GEMINI_MODEL='gemini-2.0-flash';
-
+const GROQ_KEY='YOUR_GROQ_KEY_HERE';
+const GROQ_MODEL='llama3-70b-8192';
+const GROQ_URL='https://api.groq.com/openai/v1/chat/completions';
 let scale='mid';
+let currentDesign=null;
+
 function setPrompt(t){document.getElementById('promptInp').value=t;}
 function selectScale(el,s){scale=s;document.querySelectorAll('.scale-opt').forEach(e=>e.classList.remove('selected'));el.classList.add('selected');}
+function switchOut(id,btn){
+  document.querySelectorAll('.out-panel').forEach(p=>p.classList.remove('show'));
+  document.querySelectorAll('.out-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('show');
+  btn.classList.add('active');
+}
 
 async function generate(){
   const prompt=document.getElementById('promptInp').value.trim();
   if(!prompt){alert('Please enter a system to design.');return;}
   document.getElementById('thinking').style.display='flex';
   document.getElementById('output').style.display='none';
-  document.getElementById('genBtn').disabled=true;
-  document.getElementById('genBtn').textContent='⏳ Generating…';
-  const old=document.getElementById('gemini-err');
-  if(old)old.remove();
-  document.getElementById('thinkingTxt').textContent='Designing your system architecture...';
+  const btn=document.getElementById('genBtn');
+  btn.disabled=true;btn.textContent='⏳ Generating…';
+  const old=document.getElementById('err-box');if(old)old.remove();
 
-  const scaleMap={
-    startup:'1,000 users/day, minimal infrastructure, cost-optimized',
-    mid:'1 million users/day, horizontal scaling, high availability',
-    hyper:'1 billion users/day, global CDN, multi-region, eventual consistency'
-  };
+  const scaleMap={startup:'1,000 users/day, monolith ok, minimal cost',mid:'1 million users/day, microservices, horizontal scaling, Redis cache',hyper:'1 billion users/day, global CDN, multi-region, Kafka, sharding'};
 
   const aiPrompt=`You are a principal solutions architect. Design a complete system for: "${prompt}"
 Scale: ${scaleMap[scale]}
 
-Respond ONLY with valid JSON (no markdown):
+Respond ONLY with valid JSON, no markdown fences:
 {
-  "title": "System name",
-  "description": "1-2 sentence overview",
-  "stats": {"rps": "10K req/s", "latency": "<200ms", "availability": "99.99%", "storage": "50TB"},
+  "title": "...",
+  "description": "...",
+  "stats": {"rps":"10K/s","latency":"<200ms","availability":"99.99%","storage":"50TB"},
   "components": [
-    {"name": "API Gateway", "description": "Role and responsibility", "technologies": ["Nginx","Kong"], "color": "#a78bfa"},
-    {"name": "Auth Service", "description": "...", "technologies": ["JWT","OAuth2"], "color": "#38bdf8"},
-    {"name": "Core Service", "description": "...", "technologies": ["FastAPI","Python"], "color": "#4ade80"},
-    {"name": "Database", "description": "...", "technologies": ["PostgreSQL","Redis"], "color": "#fbbf24"},
-    {"name": "Message Queue", "description": "...", "technologies": ["Kafka","RabbitMQ"], "color": "#f87171"},
-    {"name": "CDN / Storage", "description": "...", "technologies": ["CloudFront","S3"], "color": "#22d3ee"}
+    {"name":"Client Apps","description":"Web/Mobile frontend","technologies":["React","React Native"],"color":"#22d3ee","layer":"Frontend"},
+    {"name":"API Gateway","description":"Rate limiting, routing, auth","technologies":["Nginx","Kong"],"color":"#a78bfa","layer":"Gateway"},
+    {"name":"Auth Service","description":"JWT, OAuth2, sessions","technologies":["JWT","OAuth2","Redis"],"color":"#38bdf8","layer":"Services"},
+    {"name":"Core Service","description":"Main business logic","technologies":["FastAPI","Python"],"color":"#4ade80","layer":"Services"},
+    {"name":"Database","description":"Primary data store","technologies":["PostgreSQL","Redis"],"color":"#fbbf24","layer":"Data"},
+    {"name":"Message Queue","description":"Async event processing","technologies":["Kafka","Celery"],"color":"#f87171","layer":"Messaging"},
+    {"name":"CDN / Storage","description":"Static assets, media files","technologies":["CloudFront","S3"],"color":"#818cf8","layer":"Infrastructure"}
   ],
   "connections": [
-    {"from": "API Gateway", "to": "Auth Service"},
-    {"from": "API Gateway", "to": "Core Service"},
-    {"from": "Core Service", "to": "Database"},
-    {"from": "Core Service", "to": "Message Queue"},
-    {"from": "Message Queue", "to": "CDN / Storage"}
+    {"from":"Client Apps","to":"API Gateway"},
+    {"from":"API Gateway","to":"Auth Service"},
+    {"from":"API Gateway","to":"Core Service"},
+    {"from":"Core Service","to":"Database"},
+    {"from":"Core Service","to":"Message Queue"},
+    {"from":"Client Apps","to":"CDN / Storage"}
+  ],
+  "stackLayers": [
+    {"layer":"Frontend","color":"#22d3ee","items":["React / Next.js","React Native","Tailwind CSS","Apollo GraphQL"]},
+    {"layer":"API Gateway","color":"#a78bfa","items":["Nginx","Kong","Rate Limiter","SSL/TLS"]},
+    {"layer":"Backend Services","color":"#4ade80","items":["FastAPI (Python)","Node.js","gRPC","REST APIs"]},
+    {"layer":"Caching","color":"#fbbf24","items":["Redis","Memcached","CDN Edge Cache"]},
+    {"layer":"Database","color":"#f87171","items":["PostgreSQL","MongoDB","Elasticsearch"]},
+    {"layer":"Messaging","color":"#f97316","items":["Apache Kafka","RabbitMQ","Celery Workers"]},
+    {"layer":"Infrastructure","color":"#818cf8","items":["AWS / GCP","Docker","Kubernetes","Terraform"]}
+  ],
+  "roadmap": [
+    {"phase":"Phase 1 — MVP","timeline":"0-3 months","color":"#4ade80","description":"Build core features with simple stack","items":["Basic REST API (FastAPI)","PostgreSQL database","Simple auth (JWT)","React frontend","Deploy on Railway/Render"]},
+    {"phase":"Phase 2 — Scale","timeline":"3-6 months","color":"#fbbf24","description":"Add caching, queues, and monitoring","items":["Add Redis caching","Introduce message queue","Add monitoring (Datadog)","Set up CI/CD pipeline","Horizontal scaling"]},
+    {"phase":"Phase 3 — Production","timeline":"6-12 months","color":"#a78bfa","description":"Enterprise-grade reliability","items":["Kubernetes deployment","Multi-region setup","CDN integration","Advanced security","Load testing & optimization"]}
   ],
   "tradeoffs": [
-    {"type": "pro", "text": "Why a specific decision is good"},
-    {"type": "con", "text": "A tradeoff or limitation"},
-    {"type": "pro", "text": "Another advantage"},
-    {"type": "con", "text": "Another tradeoff"}
+    {"type":"pro","text":"..."},
+    {"type":"con","text":"..."},
+    {"type":"pro","text":"..."},
+    {"type":"con","text":"..."}
   ],
-  "scalability": "Detailed paragraph on how the system scales, what bottlenecks to watch, and how to handle peak traffic"
+  "scalability": "Detailed paragraph on scaling strategy, bottlenecks, and peak traffic handling"
 }`;
 
   try{
-    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_KEY}`,{
+    const res=await fetch(GROQ_URL,{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({contents:[{parts:[{text:aiPrompt}]}],generationConfig:{temperature:.4,maxOutputTokens:3000}})
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
+      body:JSON.stringify({model:GROQ_MODEL,messages:[{role:'user',content:aiPrompt}],max_tokens:3000,temperature:.4})
     });
     const data=await res.json();
-    if(!res.ok||data.error)throw new Error(data?.error?.message||'Gemini error');
-    const raw=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
-    if(!raw)throw new Error('Empty response');
+    if(!res.ok||data.error)throw new Error(data.error?.message||'Groq error');
+    const raw=data.choices?.[0]?.message?.content||'';
     const clean=raw.replace(/```json|```/gm,'').trim();
     let design;
     try{design=JSON.parse(clean);}
-    catch{const m=clean.match(/\{[\s\S]*\}/);if(!m)throw new Error('Bad JSON from Gemini');design=JSON.parse(m[0]);}
+    catch{const m=clean.match(/\{[\s\S]*\}/);if(!m)throw new Error('Bad JSON');design=JSON.parse(m[0]);}
+    currentDesign=design;
     renderDesign(design);
   }catch(e){
     document.getElementById('thinking').style.display='none';
-    document.getElementById('genBtn').disabled=false;
-    document.getElementById('genBtn').textContent='⚡ Generate';
-    const errDiv=document.getElementById('gemini-err')||document.createElement('div');
-    errDiv.id='gemini-err';
+    btn.disabled=false;btn.textContent='⚡ Generate';
+    const errDiv=document.createElement('div');
+    errDiv.id='err-box';
     errDiv.style.cssText='background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.3);border-radius:8px;padding:14px;color:#f87171;font-size:13px;margin-top:16px;font-family:system-ui';
     errDiv.innerHTML='❌ <strong>Error:</strong> '+e.message;
     document.querySelector('.container').appendChild(errDiv);
@@ -228,56 +260,141 @@ Respond ONLY with valid JSON (no markdown):
 
 function renderDesign(d){
   document.getElementById('thinking').style.display='none';
-  document.getElementById('genBtn').disabled=false;
+  const btn=document.getElementById('genBtn');btn.disabled=false;btn.textContent='⚡ Generate';
   document.getElementById('output').style.display='block';
 
+  // Stats
   const s=d.stats||{};
-  document.getElementById('statsRow').innerHTML=Object.entries({'RPS':s.rps,'Latency':s.latency,'Availability':s.availability,'Storage':s.storage})
+  document.getElementById('statsRow').innerHTML=Object.entries({RPS:s.rps,Latency:s.latency,Availability:s.availability,Storage:s.storage})
     .map(([l,v])=>`<div class="stat-mini"><div class="stat-mini-val">${v||'—'}</div><div class="stat-mini-lbl">${l}</div></div>`).join('');
 
-  const comps=d.components||[];
-  const conns=d.connections||[];
-  const W=560,H=400;
-  const positions=layoutNodes(comps,W,H);
-  let svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="background:#040810;border-radius:8px;">`;
-  svg+=`<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#334155"/></marker></defs>`;
-  conns.forEach(c=>{
-    const f=positions[c.from],t=positions[c.to];
-    if(f&&t)svg+=`<line x1="${f.cx}" y1="${f.cy}" x2="${t.cx}" y2="${t.cy}" stroke="#1e293b" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="4,3"/>`;
-  });
-  comps.forEach((c)=>{
-    const p=positions[c.name];
-    if(!p)return;
-    const col=c.color||'#64748b';
-    svg+=`<rect x="${p.x}" y="${p.y}" width="90" height="40" rx="6" fill="${col}18" stroke="${col}" stroke-width="1"/>`;
-    svg+=`<text x="${p.cx}" y="${p.cy-4}" text-anchor="middle" font-size="9" fill="${col}" font-family="system-ui" font-weight="700">${c.name}</text>`;
-    svg+=`<text x="${p.cx}" y="${p.cy+8}" text-anchor="middle" font-size="7" fill="#64748b" font-family="system-ui">${(c.technologies||[])[0]||''}</text>`;
-  });
-  svg+='</svg>';
-  document.getElementById('diagram').innerHTML=svg;
+  // Architecture SVG Diagram
+  renderArchDiagram(d);
 
-  document.getElementById('components').innerHTML=comps.map(c=>`
+  // Stack Visual SVG
+  renderStackVisual(d.stackLayers||[]);
+
+  // Components
+  document.getElementById('components').innerHTML=(d.components||[]).map(c=>`
     <div class="component-card" style="border-left-color:${c.color||'var(--purple)'}">
-      <div class="comp-name" style="color:${c.color||'var(--purple)'}">${c.name}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div class="comp-name" style="color:${c.color||'var(--purple)'}">${c.name}</div>
+        <span style="font-size:10px;padding:2px 8px;border-radius:12px;background:${c.color||'var(--purple)'}18;color:${c.color||'var(--purple)'};">${c.layer||''}</span>
+      </div>
       <div class="comp-desc">${c.description}</div>
-      <div class="comp-tech">${(c.technologies||[]).map(t=>`<span class="tech-tag" style="background:${c.color||'var(--purple)'}18;color:${c.color||'var(--purple)'};border-color:${c.color||'var(--purple)'}30">${t}</span>`).join('')}</div>
+      <div class="comp-tech">${(c.technologies||[]).map(t=>`<span class="tech-tag" style="background:${c.color||'var(--purple)'}18;color:${c.color||'var(--purple)'};">${t}</span>`).join('')}</div>
     </div>`).join('');
 
+  // Roadmap
+  document.getElementById('roadmap').innerHTML=(d.roadmap||[]).map((phase,i)=>`
+    <div class="roadmap-phase" style="border-left-color:${phase.color}">
+      <div class="roadmap-phase-title">
+        <span style="font-size:18px;">${['🌱','📈','🚀'][i]||'⚡'}</span>
+        <span style="color:${phase.color}">${phase.phase}</span>
+        <span style="font-size:11px;color:var(--muted);font-weight:normal;font-family:system-ui;">${phase.timeline}</span>
+      </div>
+      <div class="roadmap-phase-sub">${phase.description}</div>
+      <div class="roadmap-items">${(phase.items||[]).map(item=>`<span class="roadmap-item" style="background:${phase.color}18;color:${phase.color};border:.5px solid ${phase.color}40;">✓ ${item}</span>`).join('')}</div>
+    </div>`).join('');
+
+  // Tradeoffs
   document.getElementById('tradeoffs').innerHTML=(d.tradeoffs||[]).map(t=>`
     <div class="tradeoff ${t.type}"><span>${t.type==='pro'?'✅':'⚠️'}</span><span>${t.text}</span></div>`).join('');
-
   document.getElementById('scalability').textContent=d.scalability||'';
 }
 
-function layoutNodes(comps,W,H){
+function renderArchDiagram(d){
+  const comps=d.components||[];
+  const conns=d.connections||[];
+  const W=700,H=460;
+  const pos=layoutByLayer(comps,W,H);
+  let svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="background:#040810;border-radius:8px;width:100%;max-width:${W}px;">`;
+  svg+=`<defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#334155"/></marker>
+    ${comps.map(c=>`<filter id="glow-${c.name.replace(/\W/g,'')}"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`).join('')}
+  </defs>`;
+  // connections
+  conns.forEach(c=>{
+    const f=pos[c.from],t=pos[c.to];
+    if(!f||!t)return;
+    const mx=(f.cx+t.cx)/2,my=(f.cy+t.cy)/2;
+    svg+=`<path d="M${f.cx},${f.cy} Q${mx},${my} ${t.cx},${t.cy}" stroke="#1e293b" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5,3"/>`;
+  });
+  // nodes
+  comps.forEach(c=>{
+    const p=pos[c.name];if(!p)return;
+    const col=c.color||'#64748b';
+    const id=c.name.replace(/\W/g,'');
+    svg+=`<rect x="${p.x}" y="${p.y}" width="100" height="46" rx="8" fill="${col}15" stroke="${col}" stroke-width="1.5" filter="url(#glow-${id})"/>`;
+    // icon area
+    svg+=`<rect x="${p.x+4}" y="${p.y+4}" width="18" height="18" rx="4" fill="${col}30"/>`;
+    // wrap long names
+    const words=c.name.split(' ');
+    if(words.length<=2){
+      svg+=`<text x="${p.cx+2}" y="${p.cy-4}" text-anchor="middle" font-size="9" fill="${col}" font-family="system-ui" font-weight="700">${c.name}</text>`;
+    } else {
+      svg+=`<text x="${p.cx+2}" y="${p.cy-8}" text-anchor="middle" font-size="9" fill="${col}" font-family="system-ui" font-weight="700">${words.slice(0,2).join(' ')}</text>`;
+      svg+=`<text x="${p.cx+2}" y="${p.cy+4}" text-anchor="middle" font-size="9" fill="${col}" font-family="system-ui" font-weight="700">${words.slice(2).join(' ')}</text>`;
+    }
+    svg+=`<text x="${p.cx+2}" y="${p.cy+16}" text-anchor="middle" font-size="7" fill="#64748b" font-family="system-ui">${(c.technologies||[])[0]||''}</text>`;
+  });
+  svg+='</svg>';
+  document.getElementById('diagram').innerHTML=svg;
+}
+
+function renderStackVisual(layers){
+  if(!layers.length){document.getElementById('stackVisual').innerHTML='<p style="color:var(--muted);font-size:13px;font-family:system-ui;">No stack data available.</p>';return;}
+  const W=700,layerH=62,pad=16;
+  const H=layers.length*layerH+pad*2;
+  let svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="background:#040810;border-radius:8px;width:100%;max-width:${W}px;">`;
+  layers.forEach((layer,i)=>{
+    const y=pad+i*layerH;
+    const col=layer.color||'#64748b';
+    // layer background
+    svg+=`<rect x="8" y="${y}" width="${W-16}" height="${layerH-6}" rx="8" fill="${col}10" stroke="${col}40" stroke-width="1"/>`;
+    // layer label
+    svg+=`<rect x="8" y="${y}" width="130" height="${layerH-6}" rx="8" fill="${col}25" stroke="${col}60" stroke-width="1"/>`;
+    svg+=`<text x="73" y="${y+(layerH-6)/2+4}" text-anchor="middle" font-size="11" fill="${col}" font-family="system-ui" font-weight="700">${layer.layer}</text>`;
+    // tech items
+    let tx=150;
+    (layer.items||[]).slice(0,5).forEach(item=>{
+      const tw=item.length*6.5+16;
+      if(tx+tw<W-10){
+        svg+=`<rect x="${tx}" y="${y+10}" width="${tw}" height="20" rx="4" fill="${col}18" stroke="${col}50" stroke-width="1"/>`;
+        svg+=`<text x="${tx+tw/2}" y="${y+24}" text-anchor="middle" font-size="9.5" fill="${col}" font-family="system-ui">${item}</text>`;
+        tx+=tw+8;
+      }
+    });
+    // arrow between layers
+    if(i<layers.length-1){
+      const ay=y+layerH-6;
+      svg+=`<line x1="${W/2}" y1="${ay}" x2="${W/2}" y2="${ay+6}" stroke="#334155" stroke-width="1.5" marker-end="url(#arr2)"/>`;
+    }
+  });
+  svg+=`<defs><marker id="arr2" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#334155"/></marker></defs>`;
+  svg+='</svg>';
+  document.getElementById('stackVisual').innerHTML=svg;
+}
+
+function layoutByLayer(comps,W,H){
   const pos={};
-  const rows=Math.ceil(comps.length/3);
-  const cols=Math.min(3,comps.length);
-  comps.forEach((c,i)=>{
-    const col=i%3,row=Math.floor(i/3);
-    const x=30+col*(W-120)/Math.max(1,cols-1);
-    const y=30+row*(H-100)/Math.max(1,rows-1);
-    pos[c.name]={x,y,cx:x+45,cy:y+20};
+  const layers=['Frontend','Gateway','Services','Data','Messaging','Infrastructure'];
+  const byLayer={};
+  comps.forEach(c=>{
+    const l=c.layer||'Services';
+    if(!byLayer[l])byLayer[l]=[];
+    byLayer[l].push(c);
+  });
+  const allLayers=Object.keys(byLayer);
+  const rowH=H/allLayers.length;
+  allLayers.forEach((l,row)=>{
+    const items=byLayer[l];
+    items.forEach((c,col)=>{
+      const colW=W/(items.length+1);
+      const x=colW*(col+1)-50;
+      const y=row*rowH+rowH/2-23;
+      pos[c.name]={x,y,cx:x+50,cy:y+23};
+    });
   });
   return pos;
 }
