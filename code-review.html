@@ -220,7 +220,7 @@ ${wantComments ? 'Add professional inline comments to every function and class. 
 Respond ONLY with raw JSON (no markdown fences, no extra text):
 {"scores":{"overall":72,"reusability":65,"performance":80,"security":70},"summary":"2-3 sentence overview","critical":[{"title":"...","description":"...","fix":"..."}],"warnings":[{"title":"...","description":"...","fix":"..."}],"improvements":[{"title":"...","description":"...","fix":"..."}],"refactored":"full corrected code"${wantComments?',"commented_code":"full code with comments"':''},"positives":["strength 1","strength 2"]}`;
 
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`, {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.2, maxOutputTokens: 5000 } })
