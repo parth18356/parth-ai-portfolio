@@ -176,6 +176,7 @@ function switchOut(id,btn){
 async function generate(){
   const prompt=document.getElementById('promptInp').value.trim();
   if(!prompt){alert('Please enter a system to design.');return;}
+  let key=getKey();if(!key){key=promptKey();if(!key)return;}
   document.getElementById('thinking').style.display='flex';
   document.getElementById('output').style.display='none';
   const btn=document.getElementById('genBtn');

@@ -118,10 +118,48 @@ pre.icode{background:#040810;border-radius:6px;padding:12px 14px;font-size:12px;
   </div>
 </div>
 <script>
-// ✅ REPLACE with your new Groq key from console.groq.com
-const GROQ_KEY='YOUR_GROQ_KEY_HERE';
 const GROQ_MODEL='llama3-70b-8192';
 const GROQ_URL='https://api.groq.com/openai/v1/chat/completions';
+function getKey(){return localStorage.getItem('groq_key')||'';}
+function saveKey(k){localStorage.setItem('groq_key',k.trim());}
+// Auto-load key from URL param if passed from index page
+(function autoLoadKey(){
+  const p=new URLSearchParams(window.location.search).get('groq_key');
+  if(p&&p.startsWith('gsk_')){saveKey(p);history.replaceState({},'',window.location.pathname);}
+})();
+function renderKeyBanner(){
+  const existing=document.getElementById('key-banner');if(existing)existing.remove();
+  const key=getKey();
+  const banner=document.createElement('div');
+  banner.id='key-banner';
+  banner.style.cssText='display:flex;align-items:center;gap:10px;padding:8px 32px;background:#070b13;border-bottom:1px solid #1e293b;font-size:12px;font-family:system-ui;flex-wrap:wrap;';
+  banner.innerHTML=`
+    <span style="color:#64748b;">⚠️ Public repo — Groq key not stored in code.</span>
+    ${key
+      ? `<span style="color:#4ade80;">✅ Key saved</span>
+         <button onclick="localStorage.removeItem('groq_key');renderKeyBanner();" style="font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(248,113,113,.1);color:#f87171;border:1px solid rgba(248,113,113,.2);cursor:pointer;">Remove</button>`
+      : `<span style="color:#fbbf24;">No key found. Enter yours to enable AI review.</span>
+         <button onclick="showKeyInput()" style="font-size:11px;padding:3px 10px;border-radius:4px;background:rgba(34,211,238,.1);color:#22d3ee;border:1px solid rgba(34,211,238,.2);cursor:pointer;">🔑 Enter Key</button>`
+    }
+    <div style="position:relative;display:inline-block;">
+      <span style="width:18px;height:18px;border-radius:50%;background:#1e293b;border:1px solid #334155;color:#94a3b8;font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;" onmouseenter="document.getElementById('info-tip').style.display='block'" onmouseleave="document.getElementById('info-tip').style.display='none'">i</span>
+      <div id="info-tip" style="display:none;position:absolute;left:24px;top:-8px;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px 14px;width:240px;font-size:11px;color:#e2e8f0;line-height:1.7;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,.4);">
+        <strong style="color:#22d3ee;">How to get a free Groq key:</strong><br>
+        1. Go to <a href="https://console.groq.com/keys" target="_blank" style="color:#38bdf8;">console.groq.com/keys</a><br>
+        2. Sign up for free (no credit card)<br>
+        3. Click <strong>"Create API Key"</strong><br>
+        4. Copy and paste it here<br><br>
+        <span style="color:#64748b;">Saved only in your browser's localStorage. Never stored in the repo or sent anywhere except Groq.</span>
+      </div>
+    </div>`;
+  document.querySelector('nav').after(banner);
+}
+function showKeyInput(){
+  const val=prompt('Enter your Groq API key (starts with gsk_):\n\nGet one free at: console.groq.com/keys');
+  if(val&&val.trim().startsWith('gsk_')){saveKey(val.trim());renderKeyBanner();alert('✅ Key saved!');}
+  else if(val)alert('❌ Invalid key. Must start with gsk_');
+}
+renderKeyBanner();
 
 let files=[],activeTab='paste',currentResult=null;
 
@@ -167,6 +205,7 @@ async function runReview(){
     const src=activeTab==='upload'?await readFiles():code;
     const focus=[...document.querySelectorAll('.opt.on span')].map(el=>el.textContent).join(', ');
     const wantComments=[...document.querySelectorAll('.opt.on span')].some(el=>el.textContent.includes('Comments'));
+    let key=getKey();if(!key){key=promptKey();if(!key){setLoading(false);return;}}
     const prompt=`You are a senior software engineer. Review this code.
 Focus: ${focus}
 CODE:
@@ -179,10 +218,11 @@ Respond ONLY with raw JSON (no markdown fences, no extra text):
 
     const res=await fetch(GROQ_URL,{
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
       body:JSON.stringify({model:GROQ_MODEL,messages:[{role:'user',content:prompt}],max_tokens:4000,temperature:.2})
     });
     const data=await res.json();
+    if(res.status===401){localStorage.removeItem('groq_key');throw new Error('Invalid API key — please re-enter');}
     if(!res.ok||data.error)throw new Error(data.error?.message||'Groq API error');
     const raw=data.choices?.[0]?.message?.content||'';
     if(!raw)throw new Error('Empty response from Groq.');

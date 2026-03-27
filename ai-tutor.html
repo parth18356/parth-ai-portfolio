@@ -318,7 +318,41 @@ function pick(t){
   curTopic=t;
   adaptiveQueue=buildAdaptiveQueue(t);
   curQIdx=0;
-  renderSidebar();
+  function renderKeyBanner(){
+  const existing=document.getElementById('key-banner');if(existing)existing.remove();
+  const key=getKey();
+  const banner=document.createElement('div');
+  banner.id='key-banner';
+  banner.style.cssText='display:flex;align-items:center;gap:10px;padding:7px 24px;background:#070b13;border-bottom:1px solid #1e293b;font-size:12px;font-family:system-ui;flex-wrap:wrap;';
+  banner.innerHTML=`
+    <span style="color:#64748b;">⚠️ Public repo — Groq key not stored in code.</span>
+    ${key
+      ? `<span style="color:#4ade80;">✅ Key active — AI verification enabled</span>
+         <button onclick="localStorage.removeItem('groq_key');renderKeyBanner();
+renderSidebar();" style="font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(248,113,113,.1);color:#f87171;border:1px solid rgba(248,113,113,.2);cursor:pointer;">Remove</button>`
+      : `<span style="color:#fbbf24;">⚠️ No key — enter one to enable AI code checking.</span>
+         <button onclick="showKeyInput()" style="font-size:11px;padding:3px 10px;border-radius:4px;background:rgba(34,211,238,.1);color:#22d3ee;border:1px solid rgba(34,211,238,.2);cursor:pointer;">🔑 Enter Key</button>`
+    }
+    <div style="position:relative;display:inline-block;">
+      <span style="width:18px;height:18px;border-radius:50%;background:#1e293b;border:1px solid #334155;color:#94a3b8;font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;" onmouseenter="document.getElementById('at-info-tip').style.display='block'" onmouseleave="document.getElementById('at-info-tip').style.display='none'">i</span>
+      <div id="at-info-tip" style="display:none;position:absolute;left:24px;top:-8px;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px 14px;width:240px;font-size:11px;color:#e2e8f0;line-height:1.7;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,.4);">
+        <strong style="color:#22d3ee;">How to get a free Groq key:</strong><br>
+        1. Go to <a href="https://console.groq.com/keys" target="_blank" style="color:#38bdf8;">console.groq.com/keys</a><br>
+        2. Sign up free (no credit card)<br>
+        3. Click <strong>"Create API Key"</strong><br>
+        4. Paste it here<br><br>
+        <span style="color:#64748b;">Saved in your browser only. Never in the repo.</span>
+      </div>
+    </div>`;
+  document.querySelector('nav').after(banner);
+}
+function showKeyInput(){
+  const val=prompt('Enter your Groq API key (starts with gsk_):\n\nGet one free at: console.groq.com/keys');
+  if(val&&val.trim().startsWith('gsk_')){saveKey(val.trim());renderKeyBanner();alert('✅ Key saved! You can now submit solutions for AI verification.');}
+  else if(val)alert('❌ Invalid key. Must start with gsk_');
+}
+
+renderKeyBanner();
   showQ();
   bot(`📚 <strong>${t}</strong> — ${QS[t].length} questions loaded! I'm tracking your performance and will focus on your weak spots 🎯`);
   setChips(['What does this ask?','Give me a hint','Explain the concept']);
@@ -485,12 +519,15 @@ function addMsg(role,html){
 function upd(id,html){const el=document.getElementById(id);if(el)el.querySelector('.bbl').innerHTML=html;document.getElementById('msgs').scrollTop=99999;}
 
 async function aiCall(prompt){
+  let key=getKey();
+  if(!key){key=promptKey();if(!key)throw new Error('No API key');}
   const r=await fetch(GROQ_URL,{
     method:'POST',
-    headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
     body:JSON.stringify({model:GROQ_MODEL,messages:[{role:'user',content:prompt}],max_tokens:300,temperature:.5})
   });
   const d=await r.json();
+  if(r.status===401){localStorage.removeItem('groq_key');throw new Error('Invalid API key — please try again');}
   if(!r.ok||d.error)throw new Error(d.error?.message||'Groq error');
   return d.choices?.[0]?.message?.content||'';
 }
