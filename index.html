@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230f172a'/><rect x='25' y='30' width='50' height='45' rx='10' fill='none' stroke='%2322d3ee' stroke-width='4'/><circle cx='38' cy='48' r='5' fill='%2322d3ee'/><circle cx='62' cy='48' r='5' fill='%2322d3ee'/><rect x='38' y='62' width='24' height='4' rx='2' fill='%234ade80'/><rect x='46' y='18' width='4' height='12' rx='2' fill='%2322d3ee'/><circle cx='48' cy='15' r='5' fill='%2322d3ee'/></svg>" type="image/svg+xml">
 <title>Parth Singh — Senior Software Engineer</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -36,7 +36,7 @@ nav{position:sticky;top:0;z-index:500;display:flex;align-items:center;justify-co
 .stat-v{font-size:32px;font-weight:700;color:#f1f5f9;}
 .stat-l{font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:2px;}
 .avatar-wrap{position:relative;display:inline-block;}
-.avatar{width:160px;height:160px;border-radius:50%;border:2px solid rgba(56,189,248,.4);box-shadow:0 0 40px rgba(56,189,248,.15);position:relative;z-index:2;background:linear-gradient(135deg,#0c1a2e,#1e293b);display:flex;align-items:center;justify-content:center;}
+.avatar{width:160px;height:160px;border-radius:50%;border:2px solid rgba(56,189,248,.4);box-shadow:0 0 40px rgba(56,189,248,.15);position:relative;z-index:2;background:linear-gradient(135deg,#0c1a2e,#1e293b);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
 .avatar-initials{font-size:44px;font-weight:700;color:var(--blue);}
 .avatar-ring{position:absolute;inset:-8px;border-radius:50%;border:1px solid rgba(34,211,238,.2);animation:ringRot 8s linear infinite;}
 .avatar-ring2{position:absolute;inset:-16px;border-radius:50%;border:.5px solid rgba(129,140,248,.15);animation:ringRot 12s linear infinite reverse;}
@@ -174,8 +174,9 @@ footer{padding:24px;border-top:.5px solid var(--dark3);display:flex;align-items:
   <div class="hero-content">
     <div class="avatar-wrap">
       <div class="avatar-ring"></div><div class="avatar-ring2"></div>
-      <div class="hero-avatar">
-        <img src="parth.jpg" style="width:100%;height:100%;object-fit:cover;">
+      <div class="avatar">
+        <img src="parth.jpg" alt="Parth Singh" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.style.display='none';this.parentElement.querySelector('.avatar-initials').style.display='flex';">
+        <span class="avatar-initials" style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:44px;font-weight:700;color:var(--blue);">PS</span>
       </div>
       <div class="avatar-tag">GEP Worldwide · IIIT Delhi</div>
     </div>
@@ -461,7 +462,48 @@ function switchDemo(id){
   });
 }
 
-// ── LOADER ──
+// ── GROQ KEY BANNER ──
+function renderKeyBanner(){
+  const existing=document.getElementById('key-banner');if(existing)existing.remove();
+  const key=localStorage.getItem('groq_key')||'';
+  const banner=document.createElement('div');
+  banner.id='key-banner';
+  banner.style.cssText=`background:${key?'rgba(74,222,128,.06)':'rgba(251,191,36,.07)'};border-bottom:2px solid ${key?'rgba(74,222,128,.3)':'rgba(251,191,36,.35)'};padding:14px 24px;font-family:system-ui;`;
+  banner.innerHTML=`
+    <div style="max-width:900px;margin:0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+      <div style="font-size:22px;">${key?'🔐':'🔑'}</div>
+      <div style="flex:1;min-width:220px;">
+        <div style="font-size:14px;font-weight:700;color:${key?'#4ade80':'#fbbf24'};">
+          ${key?'Groq API Key Active — AI features enabled':'Groq API Key Required to use AI features'}
+        </div>
+        <div style="font-size:12px;color:#64748b;margin-top:2px;">
+          ${key?'Your key is stored in browser localStorage only. Never in the repo.':'This is a public repo — keys cannot be stored in code. Enter yours below to unlock all AI tools.'}
+        </div>
+      </div>
+      ${key
+        ? `<button onclick="localStorage.removeItem('groq_key');renderKeyBanner();" style="padding:8px 16px;border-radius:6px;background:rgba(248,113,113,.1);color:#f87171;border:1px solid rgba(248,113,113,.3);font-size:12px;font-weight:700;cursor:pointer;">🗑 Remove Key</button>`
+        : `<button onclick="showKeyInput()" style="padding:10px 22px;border-radius:8px;background:#fbbf24;color:#0a0a0f;border:none;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">+ Enter Groq Key</button>`
+      }
+      <div style="position:relative;display:inline-block;">
+        <span style="width:22px;height:22px;border-radius:50%;background:#1e293b;border:1px solid #334155;color:#94a3b8;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;" onmouseenter="document.getElementById('key-tip').style.display='block'" onmouseleave="document.getElementById('key-tip').style.display='none'">i</span>
+        <div id="key-tip" style="display:none;position:absolute;right:0;top:28px;background:#0f172a;border:1px solid #334155;border-radius:10px;padding:14px 16px;width:260px;font-size:12px;color:#e2e8f0;line-height:1.8;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,.5);">
+          <strong style="color:#22d3ee;font-size:13px;">How to get a FREE Groq key:</strong><br><br>
+          1. Go to <a href="https://console.groq.com/keys" target="_blank" style="color:#38bdf8;text-decoration:underline;">console.groq.com/keys</a><br>
+          2. Sign up free — no credit card needed<br>
+          3. Click <strong style="color:#f1f5f9;">"Create API Key"</strong><br>
+          4. Copy &amp; paste it here<br><br>
+          <span style="color:#64748b;font-size:11px;">Your key is saved in your browser's localStorage only. It is never stored in the GitHub repo or sent anywhere except directly to Groq's API.</span>
+        </div>
+      </div>
+    </div>`;
+  document.querySelector('nav').after(banner);
+}
+function showKeyInput(){
+  const val=prompt('🔑 Enter your Groq API key\n\nGet one FREE at: console.groq.com/keys\n(No credit card required)\n\nPaste your key below (starts with gsk_):');
+  if(val&&val.trim().startsWith('gsk_')){localStorage.setItem('groq_key',val.trim());renderKeyBanner();alert('✅ Groq key saved! All AI features are now unlocked.');}
+  else if(val)alert('❌ Invalid key — it must start with gsk_\n\nGet your free key at: console.groq.com/keys');
+}
+renderKeyBanner();
 const msgs=['Initializing Parth.ai...','Loading AI projects...','Almost ready 🚀'];
 let li=0;const ltxt=document.getElementById('loader-txt');
 const lInt=setInterval(()=>{li++;if(li<msgs.length)ltxt.textContent=msgs[li];},500);
