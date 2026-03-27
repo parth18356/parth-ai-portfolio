@@ -160,7 +160,7 @@ nav{background:var(--bg2);border-bottom:1px solid var(--bg3);padding:12px 24px;d
 </div>
 
 <script>
-const KEY='AIzaSyD8dw8GGXTERS84WcS9GJoRPjxrsbLDjqE';
+const KEY='AIzaSyDUVQychLaWL_PcTxeAp3rFXuyRF7jrGl8';
 let curTopic=null,curQ=0,xp=0,secs=0,timerInt=null,stuckInt=null,lastType=Date.now();
 let done={};
 
@@ -353,7 +353,7 @@ function addMsg(role,html){
 function upd(id,html){const el=document.getElementById(id);if(el)el.querySelector('.bbl').innerHTML=html;document.getElementById('msgs').scrollTop=99999;}
 
 async function aiCall(prompt){
-  const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${KEY}`,{
+  const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${KEY}`,{
     method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:.5,maxOutputTokens:300}})
   });
