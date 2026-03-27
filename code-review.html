@@ -73,7 +73,8 @@ pre.icode{background:#040810;border-radius:6px;padding:12px 14px;font-size:12px;
 <body>
 <nav>
   <div class="logo"><b>Parth</b>.ai — Code Review</div>
-  <div class="badge">⚡ Gemini 1.5 Flash</div>
+  <!-- ✅ FIXED: updated badge to reflect correct model -->
+  <div class="badge">⚡ Gemini 2.0 Flash</div>
 </nav>
 <div class="wrap">
   <h1>AI Code Review &amp; <span>Refactoring</span></h1>
@@ -136,195 +137,194 @@ pre.icode{background:#040810;border-radius:6px;padding:12px 14px;font-size:12px;
 </div>
 
 <script>
-const GEMINI_KEY = 'AIzaSyDUVQychLaWL_PcTxeAp3rFXuyRF7jrGl8';
-let files = [], activeTab = 'paste', currentResult = null;
+const GEMINI_KEY='AIzaSyDUVQychLaWL_PcTxeAp3rFXuyRF7jrGl8';
+// ✅ FIXED: updated to stable gemini-2.0-flash model
+const GEMINI_MODEL='gemini-2.0-flash';
 
-function switchTab(t, btn) {
-  activeTab = t;
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+let files=[],activeTab='paste',currentResult=null;
+
+function switchTab(t,btn){
+  activeTab=t;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('paste-panel').style.display = t === 'paste' ? 'block' : 'none';
-  document.getElementById('upload-panel').style.display = t === 'upload' ? 'block' : 'none';
+  document.getElementById('paste-panel').style.display=t==='paste'?'block':'none';
+  document.getElementById('upload-panel').style.display=t==='upload'?'block':'none';
 }
 
-function tog(el) {
+function tog(el){
   el.classList.toggle('on');
-  el.querySelector('input').checked = el.classList.contains('on');
+  el.querySelector('input').checked=el.classList.contains('on');
 }
 
-function addFiles(fl) {
-  Array.from(fl).forEach(f => { if (!files.find(x => x.name === f.name)) files.push(f); });
+function addFiles(fl){
+  Array.from(fl).forEach(f=>{if(!files.find(x=>x.name===f.name))files.push(f);});
   renderFiles();
 }
 
-function renderFiles() {
-  document.getElementById('fileList').innerHTML = files.map((f,i) => `
+function renderFiles(){
+  document.getElementById('fileList').innerHTML=files.map((f,i)=>`
     <div class="file-item">
       <span>📄 ${f.name} <span style="color:#64748b;margin-left:8px">${(f.size/1024).toFixed(1)} KB</span></span>
       <button class="file-rm" onclick="removeFile(${i})">✕</button>
     </div>`).join('');
 }
 
-function removeFile(i) { files.splice(i,1); renderFiles(); }
+function removeFile(i){files.splice(i,1);renderFiles();}
 
-async function readFiles() {
-  const parts = [];
-  for (const f of files) {
-    try { parts.push(`${'='.repeat(40)}\nFILE: ${f.name}\n${'='.repeat(40)}\n${await f.text()}`); }
-    catch { parts.push(`FILE: ${f.name} — [unreadable]`); }
+async function readFiles(){
+  const parts=[];
+  for(const f of files){
+    try{parts.push(`${'='.repeat(40)}\nFILE: ${f.name}\n${'='.repeat(40)}\n${await f.text()}`);}
+    catch{parts.push(`FILE: ${f.name} — [unreadable]`);}
   }
   return parts.join('\n\n');
 }
 
-function setLoading(on, msg) {
-  const l = document.getElementById('loader');
-  l.classList.toggle('show', on);
-  if (msg) document.getElementById('loaderTxt').textContent = msg;
-  const btn = document.getElementById('runBtn');
-  btn.disabled = on;
-  btn.textContent = on ? '⏳ Analyzing…' : '▶ Run AI Review';
+function setLoading(on,msg){
+  const l=document.getElementById('loader');
+  l.classList.toggle('show',on);
+  if(msg)document.getElementById('loaderTxt').textContent=msg;
+  const btn=document.getElementById('runBtn');
+  btn.disabled=on;
+  btn.textContent=on?'⏳ Analyzing…':'▶ Run AI Review';
 }
 
-function showErr(msg) {
-  const el = document.getElementById('errBox');
-  el.innerHTML = '❌ <strong>Error:</strong> ' + msg;
+function showErr(msg){
+  const el=document.getElementById('errBox');
+  el.innerHTML='❌ <strong>Error:</strong> '+msg;
   el.classList.add('show');
 }
 
-async function runReview() {
-  const code = document.getElementById('code').value.trim();
-  if (activeTab === 'paste' && !code) { alert('Paste some code first.'); return; }
-  if (activeTab === 'upload' && !files.length) { alert('Upload at least one file.'); return; }
+async function runReview(){
+  const code=document.getElementById('code').value.trim();
+  if(activeTab==='paste'&&!code){alert('Paste some code first.');return;}
+  if(activeTab==='upload'&&!files.length){alert('Upload at least one file.');return;}
 
   document.getElementById('errBox').classList.remove('show');
   document.getElementById('output').classList.remove('show');
-  setLoading(true, activeTab === 'upload' ? `Reading ${files.length} file(s)…` : 'AI is reviewing your code…');
+  setLoading(true,activeTab==='upload'?`Reading ${files.length} file(s)…`:'AI is reviewing your code…');
 
-  try {
-    const src = activeTab === 'upload' ? await readFiles() : code;
-    const focus = [...document.querySelectorAll('.opt.on span')].map(el => el.textContent).join(', ');
-    const wantComments = [...document.querySelectorAll('.opt.on span')].some(el => el.textContent.includes('Comments'));
+  try{
+    const src=activeTab==='upload'?await readFiles():code;
+    const focus=[...document.querySelectorAll('.opt.on span')].map(el=>el.textContent).join(', ');
+    const wantComments=[...document.querySelectorAll('.opt.on span')].some(el=>el.textContent.includes('Comments'));
 
-    setLoading(true, 'Gemini AI is reviewing your code…');
+    setLoading(true,'Gemini AI is reviewing your code…');
 
-    const prompt = `You are a senior software engineer. Review this code.
+    const prompt=`You are a senior software engineer. Review this code.
 Focus: ${focus}
 
 CODE:
 \`\`\`
-${src.substring(0, 25000)}
+${src.substring(0,25000)}
 \`\`\`
 
-${wantComments ? 'Add professional inline comments to every function and class. Put full commented code in "commented_code" field.' : ''}
+${wantComments?'Add professional inline comments to every function and class. Put full commented code in "commented_code" field.':''}
 
 Respond ONLY with raw JSON (no markdown fences, no extra text):
 {"scores":{"overall":72,"reusability":65,"performance":80,"security":70},"summary":"2-3 sentence overview","critical":[{"title":"...","description":"...","fix":"..."}],"warnings":[{"title":"...","description":"...","fix":"..."}],"improvements":[{"title":"...","description":"...","fix":"..."}],"refactored":"full corrected code"${wantComments?',"commented_code":"full code with comments"':''},"positives":["strength 1","strength 2"]}`;
 
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite-preview-06-17:generateContent?key=${GEMINI_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.2, maxOutputTokens: 5000 } })
+    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_KEY}`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.2,maxOutputTokens:5000}})
     });
 
-    const data = await res.json();
-    if (!res.ok || data.error) throw new Error(data?.error?.message || 'Gemini API error');
-    const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    if (!raw) throw new Error('Empty response from Gemini.');
+    const data=await res.json();
+    if(!res.ok||data.error)throw new Error(data?.error?.message||'Gemini API error');
+    const raw=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
+    if(!raw)throw new Error('Empty response from Gemini.');
 
     let parsed;
-    const clean = raw.replace(/```json|```/gm, '').trim();
-    try { parsed = JSON.parse(clean); }
-    catch { const m = clean.match(/\{[\s\S]*\}/); if (!m) throw new Error('Bad JSON'); parsed = JSON.parse(m[0]); }
+    const clean=raw.replace(/```json|```/gm,'').trim();
+    try{parsed=JSON.parse(clean);}
+    catch{const m=clean.match(/\{[\s\S]*\}/);if(!m)throw new Error('Bad JSON');parsed=JSON.parse(m[0]);}
 
-    currentResult = parsed;
+    currentResult=parsed;
     setLoading(false);
     renderOutput(parsed);
-  } catch(e) {
+  }catch(e){
     setLoading(false);
     showErr(e.message);
   }
 }
 
-function scoreCol(v) { return v>=80?'#4ade80':v>=55?'#fbbf24':'#f87171'; }
+function scoreCol(v){return v>=80?'#4ade80':v>=55?'#fbbf24':'#f87171';}
 
-function renderOutput(r) {
+function renderOutput(r){
   document.getElementById('output').classList.add('show');
-
-  // Scores
-  const sc = r.scores || {};
-  document.getElementById('scoreGrid').innerHTML = [['Overall',sc.overall||0],['Reusability',sc.reusability||0],['Performance',sc.performance||0],['Security',sc.security||0]].map(([l,v]) => {
-    const c = scoreCol(v);
+  const sc=r.scores||{};
+  document.getElementById('scoreGrid').innerHTML=[['Overall',sc.overall||0],['Reusability',sc.reusability||0],['Performance',sc.performance||0],['Security',sc.security||0]].map(([l,v])=>{
+    const c=scoreCol(v);
     return `<div class="score-card"><div class="score-val" style="color:${c}">${v}<span style="font-size:14px">%</span></div><div class="prog"><div class="prog-fill" style="width:${v}%;background:${c}"></div></div><div class="score-lbl">${l}</div></div>`;
   }).join('');
 
-  // Panels
-  const tabs = [{ id:'review', label:'📋 Review' }];
-  if (r.commented_code) tabs.push({ id:'comments', label:'💬 Commented Code' });
-  if (r.refactored)     tabs.push({ id:'refactored', label:'🔧 Refactored' });
+  const tabs=[{id:'review',label:'📋 Review'}];
+  if(r.commented_code)tabs.push({id:'comments',label:'💬 Commented Code'});
+  if(r.refactored)tabs.push({id:'refactored',label:'🔧 Refactored'});
 
-  document.getElementById('outTabs').innerHTML = tabs.map((t,i) => `<button class="out-tab ${i===0?'active':''}" onclick="switchOut('${t.id}',this)">${t.label}</button>`).join('');
+  document.getElementById('outTabs').innerHTML=tabs.map((t,i)=>`<button class="out-tab ${i===0?'active':''}" onclick="switchOut('${t.id}',this)">${t.label}</button>`).join('');
 
-  let reviewHtml = '';
-  if (r.summary)             reviewHtml += `<div class="summary-box">${esc(r.summary)}</div>`;
-  if (r.critical?.length)    reviewHtml += `<div class="shdr">🔴 Critical (${r.critical.length})</div>` + r.critical.map(i=>issueHtml(i,'#f87171')).join('');
-  if (r.warnings?.length)    reviewHtml += `<div class="shdr">🟡 Warnings (${r.warnings.length})</div>` + r.warnings.map(i=>issueHtml(i,'#fbbf24')).join('');
-  if (r.improvements?.length) reviewHtml += `<div class="shdr">🔵 Improvements (${r.improvements.length})</div>` + r.improvements.map(i=>issueHtml(i,'#38bdf8')).join('');
-  if (r.positives?.length)   reviewHtml += `<div class="shdr">✅ What's Good</div>` + r.positives.map(p=>`<div class="positive">${esc(p)}</div>`).join('');
+  let reviewHtml='';
+  if(r.summary)reviewHtml+=`<div class="summary-box">${esc(r.summary)}</div>`;
+  if(r.critical?.length)reviewHtml+=`<div class="shdr">🔴 Critical (${r.critical.length})</div>`+r.critical.map(i=>issueHtml(i,'#f87171')).join('');
+  if(r.warnings?.length)reviewHtml+=`<div class="shdr">🟡 Warnings (${r.warnings.length})</div>`+r.warnings.map(i=>issueHtml(i,'#fbbf24')).join('');
+  if(r.improvements?.length)reviewHtml+=`<div class="shdr">🔵 Improvements (${r.improvements.length})</div>`+r.improvements.map(i=>issueHtml(i,'#38bdf8')).join('');
+  if(r.positives?.length)reviewHtml+=`<div class="shdr">✅ What's Good</div>`+r.positives.map(p=>`<div class="positive">${esc(p)}</div>`).join('');
 
-  const commentHtml = r.commented_code ? `
+  const commentHtml=r.commented_code?`
     <p style="font-size:13px;color:#94a3b8;margin-bottom:12px">Professional inline comments added to every function, class and complex block.</p>
     <button class="copy-btn" onclick="navigator.clipboard.writeText(currentResult.commented_code).then(()=>alert('Copied!'))">📋 Copy</button>
-    <pre class="icode" style="margin-top:12px;padding:16px;border-radius:8px;border:1px solid rgba(74,222,128,.2);max-height:500px;overflow-y:auto">${esc(r.commented_code)}</pre>` : '';
+    <pre class="icode" style="margin-top:12px;padding:16px;border-radius:8px;border:1px solid rgba(74,222,128,.2);max-height:500px;overflow-y:auto">${esc(r.commented_code)}</pre>`:'';
 
-  const refactorHtml = r.refactored ? `
+  const refactorHtml=r.refactored?`
     <p style="font-size:13px;color:#94a3b8;margin-bottom:12px">Full refactored version with all issues fixed.</p>
     <button class="copy-btn" onclick="navigator.clipboard.writeText(currentResult.refactored).then(()=>alert('Copied!'))">📋 Copy</button>
-    <pre class="icode" style="margin-top:12px;padding:16px;border-radius:8px;border:1px solid rgba(56,189,248,.2);max-height:500px;overflow-y:auto">${esc(r.refactored)}</pre>` : '';
+    <pre class="icode" style="margin-top:12px;padding:16px;border-radius:8px;border:1px solid rgba(56,189,248,.2);max-height:500px;overflow-y:auto">${esc(r.refactored)}</pre>`:'';
 
-  document.getElementById('panels').innerHTML = `
+  document.getElementById('panels').innerHTML=`
     <div class="out-panel show" id="panel-review">${reviewHtml}</div>
     <div class="out-panel" id="panel-comments">${commentHtml}</div>
     <div class="out-panel" id="panel-refactored">${refactorHtml}</div>`;
 }
 
-function switchOut(id, btn) {
-  document.querySelectorAll('.out-tab').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.out-panel').forEach(p => p.classList.remove('show'));
+function switchOut(id,btn){
+  document.querySelectorAll('.out-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.out-panel').forEach(p=>p.classList.remove('show'));
   btn.classList.add('active');
-  document.getElementById('panel-' + id).classList.add('show');
+  document.getElementById('panel-'+id).classList.add('show');
 }
 
-function issueHtml(i, col) {
+function issueHtml(i,col){
   return `<div class="issue" style="border-color:${col}"><div class="ititle" style="color:${col}">${esc(i.title||'')}</div><div class="ibody">${esc(i.description||'')}${i.fix?`<pre class="icode">${esc(i.fix)}</pre>`:''}</div></div>`;
 }
 
-function esc(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function copyJSON() { navigator.clipboard.writeText(JSON.stringify(currentResult,null,2)).then(()=>alert('JSON copied!')); }
-function clearAll() {
-  document.getElementById('code').value = '';
-  files = []; renderFiles();
+function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function copyJSON(){navigator.clipboard.writeText(JSON.stringify(currentResult,null,2)).then(()=>alert('JSON copied!'));}
+function clearAll(){
+  document.getElementById('code').value='';
+  files=[];renderFiles();
   document.getElementById('output').classList.remove('show');
   document.getElementById('errBox').classList.remove('show');
-  document.getElementById('runBtn').disabled = false;
-  document.getElementById('runBtn').textContent = '▶ Run AI Review';
+  document.getElementById('runBtn').disabled=false;
+  document.getElementById('runBtn').textContent='▶ Run AI Review';
 }
 
-// Drag & drop
-const dz = document.getElementById('dropZone');
-if (dz) {
-  dz.addEventListener('dragover', e => { e.preventDefault(); dz.style.borderColor='#22d3ee'; });
-  dz.addEventListener('dragleave', () => { dz.style.borderColor='#334155'; });
-  dz.addEventListener('drop', async e => {
-    e.preventDefault(); dz.style.borderColor='#334155';
-    const all = [];
-    async function traverse(entry) {
-      if (!entry) return;
-      if (entry.isFile) await new Promise(r => entry.file(f => { all.push(f); r(); }));
-      else if (entry.isDirectory) { const rd = entry.createReader(); await new Promise(r => rd.readEntries(async es => { for (const en of es) await traverse(en); r(); })); }
+const dz=document.getElementById('dropZone');
+if(dz){
+  dz.addEventListener('dragover',e=>{e.preventDefault();dz.style.borderColor='#22d3ee';});
+  dz.addEventListener('dragleave',()=>{dz.style.borderColor='#334155';});
+  dz.addEventListener('drop',async e=>{
+    e.preventDefault();dz.style.borderColor='#334155';
+    const all=[];
+    async function traverse(entry){
+      if(!entry)return;
+      if(entry.isFile)await new Promise(r=>entry.file(f=>{all.push(f);r();}));
+      else if(entry.isDirectory){const rd=entry.createReader();await new Promise(r=>rd.readEntries(async es=>{for(const en of es)await traverse(en);r();}));}
     }
-    for (const item of [...e.dataTransfer.items]) {
-      const en = item.webkitGetAsEntry?.();
-      if (en) await traverse(en); else if (item.getAsFile) all.push(item.getAsFile());
+    for(const item of[...e.dataTransfer.items]){
+      const en=item.webkitGetAsEntry?.();
+      if(en)await traverse(en);else if(item.getAsFile)all.push(item.getAsFile());
     }
     addFiles(all);
   });
