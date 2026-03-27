@@ -63,14 +63,13 @@ h1 span{color:var(--purple);}
 <body>
 <nav>
   <div class="nav-logo"><span>Parth</span>.ai — <span style="color:#f1f5f9;font-size:12px;">System Design</span></div>
-  <div class="nav-badge">Powered by Gemini 1.5 Flash · Free</div>
+  <!-- ✅ FIXED: updated badge to reflect correct model -->
+  <div class="nav-badge">Powered by Gemini 2.0 Flash · Free</div>
 </nav>
 
 <div class="container">
   <h1>AI System <span>Design</span> Generator</h1>
   <p class="subtitle">Enter any app or system name. AI generates a complete architecture diagram, component breakdown, tech stack, and scalability tradeoffs.</p>
-
-
 
   <div class="card">
     <div class="card-title">What do you want to design?</div>
@@ -142,7 +141,11 @@ h1 span{color:var(--purple);}
 </div>
 
 <script>
-const GEMINI_KEY='AIzaSyDUVQychLaWL_PcTxeAp3rFXuyRF7jrGl8';
+const GEMINI_KEY='AIzaSyDf-WfsNb4o2qqiwt76clagAJqj-dzrb6A';
+// ✅ FIXED: updated to stable gemini-2.0-flash model
+// ✅ FIXED: was incorrectly pointing to Anthropic API — now correctly uses Gemini
+const GEMINI_MODEL='gemini-2.0-flash';
+
 let scale='mid';
 function setPrompt(t){document.getElementById('promptInp').value=t;}
 function selectScale(el,s){scale=s;document.querySelectorAll('.scale-opt').forEach(e=>e.classList.remove('selected'));el.classList.add('selected');}
@@ -155,10 +158,14 @@ async function generate(){
   document.getElementById('genBtn').disabled=true;
   document.getElementById('genBtn').textContent='⏳ Generating…';
   const old=document.getElementById('gemini-err');
-  if(old) old.remove();
+  if(old)old.remove();
   document.getElementById('thinkingTxt').textContent='Designing your system architecture...';
 
-  const scaleMap={startup:'1,000 users/day, minimal infrastructure, cost-optimized',mid:'1 million users/day, horizontal scaling, high availability',hyper:'1 billion users/day, global CDN, multi-region, eventual consistency'};
+  const scaleMap={
+    startup:'1,000 users/day, minimal infrastructure, cost-optimized',
+    mid:'1 million users/day, horizontal scaling, high availability',
+    hyper:'1 billion users/day, global CDN, multi-region, eventual consistency'
+  };
 
   const aiPrompt=`You are a principal solutions architect. Design a complete system for: "${prompt}"
 Scale: ${scaleMap[scale]}
@@ -193,8 +200,9 @@ Respond ONLY with valid JSON (no markdown):
 }`;
 
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',    headers:{'Content-Type':'application/json'},
+    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_KEY}`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
       body:JSON.stringify({contents:[{parts:[{text:aiPrompt}]}],generationConfig:{temperature:.4,maxOutputTokens:3000}})
     });
     const data=await res.json();
@@ -203,8 +211,8 @@ Respond ONLY with valid JSON (no markdown):
     if(!raw)throw new Error('Empty response');
     const clean=raw.replace(/```json|```/gm,'').trim();
     let design;
-    try{ design=JSON.parse(clean); }
-    catch{ const m=clean.match(/\{[\s\S]*\}/); if(!m) throw new Error('Bad JSON from Gemini'); design=JSON.parse(m[0]); }
+    try{design=JSON.parse(clean);}
+    catch{const m=clean.match(/\{[\s\S]*\}/);if(!m)throw new Error('Bad JSON from Gemini');design=JSON.parse(m[0]);}
     renderDesign(design);
   }catch(e){
     document.getElementById('thinking').style.display='none';
@@ -213,7 +221,7 @@ Respond ONLY with valid JSON (no markdown):
     const errDiv=document.getElementById('gemini-err')||document.createElement('div');
     errDiv.id='gemini-err';
     errDiv.style.cssText='background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.3);border-radius:8px;padding:14px;color:#f87171;font-size:13px;margin-top:16px;font-family:system-ui';
-    errDiv.innerHTML='❌ <strong>Error:</strong> '+e.message+'<br><small style="color:#64748b;margin-top:4px;display:block">Note: This tool requires Vercel/browser deployment — Gemini API is blocked in Claude\'s sandbox preview.</small>';
+    errDiv.innerHTML='❌ <strong>Error:</strong> '+e.message;
     document.querySelector('.container').appendChild(errDiv);
   }
 }
@@ -223,25 +231,21 @@ function renderDesign(d){
   document.getElementById('genBtn').disabled=false;
   document.getElementById('output').style.display='block';
 
-  // Stats
   const s=d.stats||{};
   document.getElementById('statsRow').innerHTML=Object.entries({'RPS':s.rps,'Latency':s.latency,'Availability':s.availability,'Storage':s.storage})
     .map(([l,v])=>`<div class="stat-mini"><div class="stat-mini-val">${v||'—'}</div><div class="stat-mini-lbl">${l}</div></div>`).join('');
 
-  // Diagram
   const comps=d.components||[];
   const conns=d.connections||[];
-  const W=560, H=400;
+  const W=560,H=400;
   const positions=layoutNodes(comps,W,H);
   let svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="background:#040810;border-radius:8px;">`;
   svg+=`<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#334155"/></marker></defs>`;
-  // Draw connections
   conns.forEach(c=>{
     const f=positions[c.from],t=positions[c.to];
     if(f&&t)svg+=`<line x1="${f.cx}" y1="${f.cy}" x2="${t.cx}" y2="${t.cy}" stroke="#1e293b" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="4,3"/>`;
   });
-  // Draw nodes
-  comps.forEach((c,i)=>{
+  comps.forEach((c)=>{
     const p=positions[c.name];
     if(!p)return;
     const col=c.color||'#64748b';
@@ -252,7 +256,6 @@ function renderDesign(d){
   svg+='</svg>';
   document.getElementById('diagram').innerHTML=svg;
 
-  // Components
   document.getElementById('components').innerHTML=comps.map(c=>`
     <div class="component-card" style="border-left-color:${c.color||'var(--purple)'}">
       <div class="comp-name" style="color:${c.color||'var(--purple)'}">${c.name}</div>
@@ -260,11 +263,9 @@ function renderDesign(d){
       <div class="comp-tech">${(c.technologies||[]).map(t=>`<span class="tech-tag" style="background:${c.color||'var(--purple)'}18;color:${c.color||'var(--purple)'};border-color:${c.color||'var(--purple)'}30">${t}</span>`).join('')}</div>
     </div>`).join('');
 
-  // Tradeoffs
   document.getElementById('tradeoffs').innerHTML=(d.tradeoffs||[]).map(t=>`
     <div class="tradeoff ${t.type}"><span>${t.type==='pro'?'✅':'⚠️'}</span><span>${t.text}</span></div>`).join('');
 
-  // Scalability
   document.getElementById('scalability').textContent=d.scalability||'';
 }
 
@@ -273,7 +274,7 @@ function layoutNodes(comps,W,H){
   const rows=Math.ceil(comps.length/3);
   const cols=Math.min(3,comps.length);
   comps.forEach((c,i)=>{
-    const col=i%3, row=Math.floor(i/3);
+    const col=i%3,row=Math.floor(i/3);
     const x=30+col*(W-120)/Math.max(1,cols-1);
     const y=30+row*(H-100)/Math.max(1,rows-1);
     pos[c.name]={x,y,cx:x+45,cy:y+20};
