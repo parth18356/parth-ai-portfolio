@@ -7,7 +7,14 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{--bg:#0a0a0f;--bg2:#0f172a;--bg3:#1e293b;--cyan:#22d3ee;--blue:#38bdf8;--green:#4ade80;--purple:#a78bfa;--yellow:#fbbf24;--text:#e2e8f0;--muted:#64748b;}
-body{background:var(--bg);color:var(--text);font-family:'Courier New',monospace;min-height:100vh;}
+/* KEY MODAL */
+.key-modal{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;display:flex;align-items:center;justify-content:center;}
+.key-modal-box{background:#0f172a;border:1px solid var(--cyan);border-radius:16px;padding:32px;max-width:460px;width:90%;text-align:center;font-family:system-ui;}
+.key-modal-box h2{font-size:20px;color:#f1f5f9;margin-bottom:8px;}
+.key-modal-box p{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;}
+.key-inp{width:100%;background:#070b13;border:1px solid var(--bg3);border-radius:8px;padding:12px 14px;font-size:13px;color:var(--text);outline:none;margin-bottom:12px;font-family:monospace;}
+.key-inp:focus{border-color:var(--cyan);}
+.key-sub{width:100%;padding:12px;background:var(--cyan);color:#0a0a0f;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:system-ui;}
 nav{background:rgba(10,10,15,.95);border-bottom:.5px solid var(--bg3);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
 .nav-logo{color:var(--cyan);font-size:14px;font-weight:700;}.nav-logo span{color:#f1f5f9;}
 .nav-badge{font-size:10px;padding:3px 10px;border-radius:4px;background:rgba(167,139,250,.1);color:var(--purple);border:.5px solid rgba(167,139,250,.25);}
@@ -67,7 +74,10 @@ h1{font-size:28px;color:#f1f5f9;font-family:system-ui;font-weight:700;margin-bot
 <body>
 <nav>
   <div class="nav-logo"><span>Parth</span>.ai — <span style="color:#f1f5f9;font-size:12px;">System Design</span></div>
-  <div class="nav-badge">Groq · Llama 3 70B · Free</div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <button id="keyNavBtn" onclick="showKeyModal()" style="font-size:11px;padding:4px 12px;border-radius:6px;cursor:pointer;border:1px solid;transition:all .2s;">🔑 Enter Key</button>
+    <div class="nav-badge">Groq · Llama 3.3 70B · Free</div>
+  </div>
 </nav>
 <div class="container">
   <h1>AI System <span>Design</span> Generator</h1>

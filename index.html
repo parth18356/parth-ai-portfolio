@@ -591,7 +591,15 @@ function gmOver(game,score,emoji,label){
 }
 function gmSave(){const name=document.getElementById('gm-name').value.trim()||'Anonymous';const all=getScores();all.push({name,game:gmPending.game,score:gmPending.score,emoji:gmPending.emoji,date:new Date().toLocaleDateString()});all.sort((a,b)=>b.score-a.score);if(all.length>100)all.splice(100);setScores(all);gmClose();showLB('all');}
 function gmClose(){document.getElementById('gmodal').style.display='none';}
-function showOv(id,score,emoji,restartFn){const ov=document.getElementById(id);if(!ov)return;ov.innerHTML=`<div style="font-size:36px">${emoji}</div><h3 style="color:#f87171;">Game Over!</h3><div style="font-size:32px;font-weight:700;color:var(--cyan);">${score}</div><button class="gplay" onclick="${restartFn}">▶ Play Again</button>`;ov.style.display='flex';}
+function showOv(id,score,emoji,restartFn){
+  const ov=document.getElementById(id);if(!ov)return;
+  ov.innerHTML=`
+    <div style="font-size:36px">${emoji}</div>
+    <h3 style="color:#f87171;font-size:20px;font-weight:700;">Game Over!</h3>
+    <div style="font-size:32px;font-weight:700;color:var(--cyan);margin:8px 0;">${score}</div>
+    <button class="gplay" onclick="${restartFn}" style="margin-top:8px;">▶ Play Again</button>`;
+  ov.style.display='flex';
+}
 document.addEventListener('keydown',e=>{
   const tag=document.activeElement.tagName;if(tag==='INPUT'||tag==='TEXTAREA')return;
   gKeys[e.key]=true;
